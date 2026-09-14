@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#08050c"
+    >
+
+    <title>365 Days — Our Story</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body data-theme="garden-dawn">
+
+    <!-- =====================================================
+         BACKGROUND
+         ===================================================== -->
+
+    <div class="background" aria-hidden="true">
+
+        <div class="background-gradient"></div>
+
+        <div class="background-glow-one"></div>
+
+        <div class="background-glow-two"></div>
+
+        <div class="background-color-layer"></div>
+
+        <div class="vignette"></div>
+
+        <div class="grain"></div>
+
+    </div>
+
+
+    <!-- =====================================================
+         GLOBAL CINEMATIC ATMOSPHERE
+         ===================================================== -->
+
+    <div
+        class="cinematic-atmosphere"
+        id="cinematicAtmosphere"
+        aria-hidden="true"
+    >
+
+        <div
+            class="atmosphere-stars"
+            id="atmosphereStars"
+        ></div>
+
+        <div
+            class="atmosphere-lanterns"
+            id="atmosphereLanterns"
+        ></div>
+
+        <div
+            class="atmosphere-flowers"
+            id="atmosphereFlowers"
+        ></div>
+
+        <div
+            class="atmosphere-petals"
+            id="atmospherePetals"
+        ></div>
+
+        <div
+            class="atmosphere-fireflies"
+            id="atmosphereFireflies"
+        ></div>
+
+        <div
+            class="atmosphere-clouds"
+            id="atmosphereClouds"
+        ></div>
+
+        <div
+            class="atmosphere-rays"
+            id="atmosphereRays"
+        ></div>
+
+        <div class="atmosphere-moon">
+            <div class="moon-glow"></div>
+            <div class="moon-body"></div>
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         INTRO
+         ===================================================== -->
+
+    <main
+        class="intro"
+        id="intro"
+    >
+
+        <div class="intro-decoration">
+
+            <div class="intro-ring ring-one"></div>
+
+            <div class="intro-ring ring-two"></div>
+
+            <div class="intro-ring ring-three"></div>
+
+        </div>
+
+
+        <div class="intro-content">
+
+            <p class="eyebrow">
+                SOMEWHERE BETWEEN TWO PEOPLE
+            </p>
+
+            <h1>
+                A story
+                <span>began.</span>
+            </h1>
+
+            <p class="intro-subtitle">
+                And neither of them knew
+                how beautiful it would become.
+            </p>
+
+
+            <button
+                id="startButton"
+                class="start-button"
+                type="button"
+            >
+
+                <span>
+                    Begin our story
+                </span>
+
+                <span
+                    class="start-button-arrow"
+                    aria-hidden="true"
+                >
+                    →
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <div class="intro-footer">
+
+            <span>365 DAYS</span>
+
+            <span class="footer-line"></span>
+
+            <span>ONE STORY</span>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         SITE HEADER
+         ===================================================== -->
+
+    <header
+        class="site-header"
+        id="siteHeader"
+    >
+
+        <div class="brand-mark">
+
+            <span class="brand-small">
+                365 DAYS
+            </span>
+
+            <span class="brand-line"></span>
+
+            <span class="brand-large">
+                OUR STORY
+            </span>
+
+        </div>
+
+
+        <button
+            class="sound-toggle"
+            id="globalSoundToggle"
+            type="button"
+            aria-label="Toggle music"
+            aria-pressed="false"
+        >
+
+            <span class="sound-icon">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </span>
+
+            <span class="sound-label">
+                SOUND OFF
+            </span>
+
+        </button>
+
+    </header>
+
+
+    <!-- =====================================================
+         STORY
+         ===================================================== -->
+
+    <main
+        class="story"
+        id="story"
+        aria-hidden="true"
+    >
+
+
+        <!-- =================================================
+             CHAPTER 01 INTRO
+             ================================================= -->
+
+        <section
+            class="chapter-intro"
+            id="chapter-01-intro"
+            aria-hidden="true"
+        >
+
+            <div class="chapter-intro-inner">
+
+                <p class="chapter-kicker">
+                    CHAPTER 01
+                </p>
+
+                <div class="chapter-number-large">
+                    01
+                </div>
+
+                <div class="chapter-divider">
+
+                    <span></span>
+
+                    <i>✦</i>
+
+                    <span></span>
+
+                </div>
+
+                <h2>
+                    The beginning.
+                </h2>
+
+                <p>
+                    Every story has a first moment.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             MONTH 01
+             ================================================= -->
+
+        <section
+            class="month-screen"
+            id="month-01"
+            data-month="01"
+            data-theme="garden-dawn"
+            aria-hidden="true"
+        >
+
+
+            <!-- =============================================
+                 MONTH ENVIRONMENT
+                 ============================================= -->
+
+            <div
+                class="month-environment"
+                aria-hidden="true"
+            >
+
+                <div class="environment-gradient"></div>
+
+                <div class="environment-horizon"></div>
+
+                <div class="environment-ground-glow"></div>
+
+            </div>
+
+
+            <!-- =============================================
+                 MONTH HEADER
+                 ============================================= -->
+
+            <div class="month-header">
+
+                <div class="month-heading">
+
+                    <p class="month-kicker">
+                        CHAPTER 01
+                    </p>
+
+                    <h2>
+                        MONTH 01
+                    </h2>
+
+                </div>
+
+
+                <div class="month-date-mark">
+                    01 / 12
+                </div>
+
+            </div>
+
+
+            <!-- =============================================
+                 FULLSCREEN PHOTO WORLD
+                 ============================================= -->
+
+            <div
+                class="cinematic-photo-stage"
+                id="photo-stage-01"
+            >
+
+                <div
+                    class="photo-world"
+                    id="photo-world-01"
+                >
+                <canvas
+                   id="interactive-strands-01"
+                        class="interactive-strands"
+                         aria-hidden="true"
+                     ></canvas>
+                    <div
+                        class="photo-atmosphere"
+                        aria-hidden="true"
+                    >
+
+                        <div class="photo-haze"></div>
+
+                        <div class="photo-light"></div>
+
+                        <div class="photo-shadow"></div>
+
+                    </div>
+
+
+                    <!-- =================================
+                         PHOTOS
+                         ================================= -->
+
+                    <div
+                        class="month-photos"
+                        id="photos-01"
+                    >
+
+                        {% for photo in photos_by_month['01'] %}
+
+                        <img
+                            src="{{ url_for('media', filename='month-01/' + photo) }}"
+                            alt="Memory {{ loop.index }} from Month 01"
+                            class="story-photo{% if loop.first %} active{% endif %}"
+                            data-photo-index="{{ loop.index0 }}"
+                            draggable="false"
+                        >
+
+                        {% endfor %}
+
+                        {% if not photos_by_month['01'] %}
+                        <p class="empty-gallery" role="status">
+                            Add photos to <code>media/month-01</code> to begin this chapter.
+                        </p>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     PHOTO COUNTER
+                     ========================================= -->
+
+                <div
+                    class="photo-counter"
+                    aria-live="polite"
+                >
+
+                    <span id="photo-current-01">
+                        01
+                    </span>
+
+                    <span class="counter-line"></span>
+
+                    <span id="photo-total-01">
+                        {{ photos_by_month['01']|length }}
+                    </span>
+
+                </div>
+
+
+                <!-- =========================================
+                     PHOTO PROGRESS
+                     ========================================= -->
+
+                <div
+                    class="photo-progress"
+                    id="photo-progress-01"
+                    aria-hidden="true"
+                >
+
+                    <span
+                        class="photo-progress-fill"
+                    ></span>
+
+                </div>
+
+                <div class="photo-navigation" aria-label="Photo navigation">
+                    <button
+                        id="previousPhoto"
+                        class="photo-nav-button"
+                        type="button"
+                        aria-label="Show previous photo"
+                    >
+                        ←
+                    </button>
+
+                    <button
+                        id="nextPhoto"
+                        class="photo-nav-button"
+                        type="button"
+                        aria-label="Show next photo"
+                    >
+                        →
+                    </button>
+                </div>
+
+            </div>
+
+
+            <!-- =============================================
+                 MEMORY INFORMATION
+                 ============================================= -->
+
+            <div class="month-info">
+
+                <p class="memory-month">
+                    MONTH 01
+                </p>
+
+                <h3>
+                    The beginning.
+                </h3>
+
+                <p class="memory-text">
+                    This is where our story began.
+                    A month full of little moments,
+                    memories and things worth remembering.
+                </p>
+
+
+                <button
+                    class="voice-button"
+                    id="voice-button-01"
+                    type="button"
+                    aria-label="Play or pause Month 01 music"
+                    aria-pressed="false"
+                >
+
+                    <span class="voice-icon">
+
+                        <span class="voice-bar"></span>
+                        <span class="voice-bar"></span>
+                        <span class="voice-bar"></span>
+                        <span class="voice-bar"></span>
+
+                    </span>
+
+                    <span class="voice-text">
+                        Listen to my heart
+                    </span>
+
+                </button>
+
+
+                <audio
+                    id="month-01-audio"
+                    preload="auto"
+                    loop
+                >
+                    <source
+                        src="{{ url_for('audio', filename='month-01.mp3') }}"
+                        type="audio/mpeg"
+                    >
+                </audio>
+
+            </div>
+
+
+            <!-- =============================================
+                 CHAPTER PROGRESS
+                 ============================================= -->
+
+            <div class="chapter-progress">
+                01 / 12
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             FUTURE MONTH PLACEHOLDERS
+             ================================================= -->
+
+        <section
+            class="future-month"
+            id="month-02"
+            aria-hidden="true"
+        >
+
+            <div class="future-month-inner">
+
+                <p class="chapter-kicker">
+                    CHAPTER 02
+                </p>
+
+                <div class="future-month-number">
+                    02
+                </div>
+
+                <h2>
+                    The story continues.
+                </h2>
+
+                <p>
+                    Month 02 will open after Month 01 is complete.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section
+            class="future-month"
+            id="month-03"
+            aria-hidden="true"
+        >
+
+            <div class="future-month-inner">
+
+                <p class="chapter-kicker">
+                    CHAPTER 03
+                </p>
+
+                <div class="future-month-number">
+                    03
+                </div>
+
+                <h2>
+                    More memories.
+                </h2>
+
+            </div>
+
+        </section>
+
+
+        <section
+            class="future-month"
+            id="month-04"
+            aria-hidden="true"
+        >
+
+            <div class="future-month-inner">
+
+                <p class="chapter-kicker">
+                    CHAPTER 04
+                </p>
+
+                <div class="future-month-number">
+                    04
+                </div>
+
+                <h2>
+                    Another chapter.
+                </h2>
+
+            </div>
+
+        </section>
+
+
+        <section
+            class="future-month"
+            id="month-05"
+            aria-hidden="true"
+        >
+
+            <div class="future-month-inner">
+
+                <p class="chapter-kicker">
+                    CHAPTER 05
+                </p>
+
+                <div class="future-month-number">
+                    05
+                </div>
+
+                <h2>
+                    Still becoming.
+                </h2>
+
+            </div>
+
+        </section>
+
+
+        <section
+            class="future-month"
+            id="month-06"
+            aria-hidden="true"
+        >
+
+            <div class="future-month-inner">
+
+                <p class="chapter-kicker">
+                    CHAPTER 06
+                </p>
+
+                <div class="future-month-number">
+                    06
+                </div>
+
+                <h2>
+                    Halfway through our story.
+                </h2>
+
+            </div>
+
+        </section>
+
+
+        <section
+            class="future-month"
+            id="month-07"
+            aria-hidden="true"
+        >
+
+            <div class="future-month-inner">
+
+                <p class="chapter-kicker">
+                    CHAPTER 07
+                </p>
+
+                <div class="future-month-number">
+                    07
+                </div>
+
+                <h2>
+                    Little moments.
+                </h2>
+
+            </div>
+
+        </section>
+
+
+        <section
+            class="future-month"
+            id="month-08"
+            aria-hidden="true"
+        >
+
+            <div class="future-month-inner">
+
+                <p class="chapter-kicker">
+                    CHAPTER 08
+                </p>
+
+                <div class="future-month-number">
+                    08
+                </div>
+
+                <h2>
+                    Somewhere along the way.
+                </h2>
+
+            </div>
+
+        </section>
+
+
+        <section
+            class="future-month"
+            id="month-09"
+            aria-hidden="true"
+        >
+
+            <div class="future-month-inner">
+
+                <p class="chapter-kicker">
+                    CHAPTER 09
+                </p>
+
+                <div class="future-month-number">
+                    09
+                </div>
+
+                <h2>
+                    More than a memory.
+                </h2>
+
+            </div>
+
+        </section>
+
+
+        <section
+            class="future-month"
+            id="month-10"
+            aria-hidden="true"
+        >
+
+            <div class="future-month-inner">
+
+                <p class="chapter-kicker">
+                    CHAPTER 10
+                </p>
+
+                <div class="future-month-number">
+                    10
+                </div>
+
+                <h2>
+                    Almost there.
+                </h2>
+
+            </div>
+
+        </section>
+
+
+        <section
+            class="future-month"
+            id="month-11"
+            aria-hidden="true"
+        >
+
+            <div class="future-month-inner">
+
+                <p class="chapter-kicker">
+                    CHAPTER 11
+                </p>
+
+                <div class="future-month-number">
+                    11
+                </div>
+
+                <h2>
+                    One more chapter.
+                </h2>
+
+            </div>
+
+        </section>
+
+
+        <section
+            class="future-month"
+            id="month-12"
+            aria-hidden="true"
+        >
+
+            <div class="future-month-inner">
+
+                <p class="chapter-kicker">
+                    CHAPTER 12
+                </p>
+
+                <div class="future-month-number">
+                    12
+                </div>
+
+                <h2>
+                    The final chapter.
+                </h2>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CONCLUSION
+             ================================================= -->
+
+        <section
+            class="conclusion"
+            id="conclusion"
+            aria-hidden="true"
+        >
+
+            <div class="conclusion-inner">
+
+                <p class="chapter-number">
+                    365 DAYS LATER
+                </p>
+
+                <h2>
+                    And somehow...
+                </h2>
+
+                <p class="final-text">
+                    One year became a thousand little memories.
+                </p>
+
+                <div class="chapter-line"></div>
+
+                <button
+                    id="birthdayButton"
+                    class="birthday-button"
+                    type="button"
+                    disabled
+                >
+                    There's one more thing...
+                    <span>→</span>
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             BIRTHDAY REVEAL
+             ================================================= -->
+
+        <section
+            class="birthday-reveal"
+            id="birthdayReveal"
+            aria-hidden="true"
+        >
+
+            <div class="birthday-content">
+
+                <p class="birthday-kicker">
+                    FOR THE PERSON WHO MADE THIS YEAR SPECIAL
+                </p>
+
+                <div class="birthday-divider">
+
+                    <span></span>
+
+                    <i>✦</i>
+
+                    <span></span>
+
+                </div>
+
+                <div class="birthday-number">
+                    365
+                </div>
+
+                <h2>
+                    A beautiful year.
+                </h2>
+
+                <p class="birthday-message">
+                    Some memories deserve more than
+                    a place in our camera roll.
+                </p>
+
+                <div class="birthday-signature">
+
+                    <span class="signature-line"></span>
+
+                    <span>
+                        OUR STORY
+                    </span>
+
+                    <span class="signature-line"></span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         TRANSITION ENGINE
+         ===================================================== -->
+
+    <div
+        class="transition-system"
+        id="transitionSystem"
+        aria-hidden="true"
+    >
+
+        <div
+            class="transition-back"
+            id="transitionBack"
+        ></div>
+
+        <div
+            class="transition-main"
+            id="transitionMain"
+        ></div>
+
+        <div
+            class="transition-front"
+            id="transitionFront"
+        ></div>
+
+        <div
+            class="transition-particles"
+            id="transitionParticles"
+        ></div>
+
+    </div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script type="application/json" id="storyData">
+        {
+            "totalMonths": 12,
+            "photos": {
+                "01": {{ photos_by_month['01']|tojson }}
+            }
+        }
+    </script>
+
+    <script>
+        window.STORY_DATA = JSON.parse(
+            document.getElementById('storyData').textContent
+        );
+    </script>
+
+
+    <script
+        src="{{ url_for('static', filename='js/script.js') }}"
+        defer
+    ></script>
+
+</body>
+</html>

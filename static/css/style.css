@@ -1,0 +1,692 @@
+/* 365 DAYS — OUR STORY / LOVE MASTER VISUAL ENGINE */
+:root{--bg1:#08050c;--bg2:#1c0c24;--bg3:#32122f;--accent:#f4bfd8;--text:#fff8fc;--muted:rgba(255,248,252,.68);--line:rgba(255,255,255,.18);--ease:cubic-bezier(.16,1,.3,1)}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#08050c;color:var(--text);font-family:Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}body{overflow:hidden}button{font:inherit;color:inherit}button:focus-visible{outline:1px solid #fff;outline-offset:5px}
+
+body[data-theme="garden-dawn"]{--bg1:#0b0610;--bg2:#43223a;--bg3:#a45c7c;--accent:#ffd7e8}
+body[data-theme="rose-garden"]{--bg1:#12050c;--bg2:#54172f;--bg3:#ad5579;--accent:#ffd2e2}
+body[data-theme="moon-garden"]{--bg1:#050914;--bg2:#18264d;--bg3:#4d558f;--accent:#dce8ff}
+body[data-theme="lantern-evening"]{--bg1:#130805;--bg2:#4b2916;--bg3:#936033;--accent:#ffe1a8}
+body[data-theme="lavender-dusk"]{--bg1:#0b0714;--bg2:#2e1a4b;--bg3:#79539c;--accent:#eadcff}
+body[data-theme="starlit-garden"]{--bg1:#02060d;--bg2:#112742;--bg3:#405b82;--accent:#d8efff}
+body[data-theme="fairy-night"]{--bg1:#08040f;--bg2:#26163e;--bg3:#6d527d;--accent:#f6dcff}
+body[data-theme="golden-hour"]{--bg1:#130904;--bg2:#573219;--bg3:#b0703d;--accent:#ffe2ab}
+body[data-theme="cherry-night"]{--bg1:#10040b;--bg2:#41112f;--bg3:#8c3165;--accent:#ffc9df}
+body[data-theme="misty-garden"]{--bg1:#061011;--bg2:#1b3934;--bg3:#587b70;--accent:#d8f4e8}
+body[data-theme="violet-moon"]{--bg1:#070511;--bg2:#24184b;--bg3:#5d4892;--accent:#e4d9ff}
+body[data-theme="cosmic-night"]{--bg1:#02030a;--bg2:#111a3d;--bg3:#492960;--accent:#e6ddff}
+
+.background,.cinematic-atmosphere,.transition-system{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}.background{z-index:0;overflow:hidden;background:radial-gradient(circle at 50% 45%,var(--bg3),transparent 62%),linear-gradient(135deg,var(--bg1),var(--bg2));transition:background 2.4s ease}.background-gradient,.background-color-layer,.background-glow,.vignette,.grain{position:absolute;inset:0}.background-gradient{background:radial-gradient(circle at 15% 80%,rgba(255,110,185,.2),transparent 30%),radial-gradient(circle at 85% 10%,rgba(115,155,255,.16),transparent 32%);animation:ambient 12s ease-in-out infinite alternate}.background-glow-one{position:absolute;width:58vw;height:58vw;left:-20vw;bottom:-28vw;border-radius:50%;background:rgba(255,90,180,.14);filter:blur(70px);animation:orb1 16s ease-in-out infinite alternate}.background-glow-two{position:absolute;width:52vw;height:52vw;right:-20vw;top:-22vw;border-radius:50%;background:rgba(120,140,255,.13);filter:blur(80px);animation:orb2 19s ease-in-out infinite alternate}.background-color-layer{background:radial-gradient(circle,transparent 35%,rgba(0,0,0,.32) 100%)}.vignette{background:radial-gradient(circle,transparent 30%,rgba(0,0,0,.7) 100%)}.grain{opacity:.055;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E")}
+
+.site-header{position:fixed;z-index:80;inset:0 0 auto;display:flex;justify-content:space-between;align-items:center;padding:28px 5vw;opacity:0;transform:translateY(-18px);transition:1s var(--ease);pointer-events:none}.header-visible{opacity:1!important;transform:none!important;pointer-events:auto!important}.brand-mark{display:flex;align-items:center;gap:12px;font:9px Arial,sans-serif;letter-spacing:.22em}.brand-small,.brand-large{opacity:.78}.brand-line{width:32px;height:1px;background:var(--line)}.sound-toggle{display:flex;align-items:center;gap:10px;border:0;background:none;cursor:pointer;font:8px Arial,sans-serif;letter-spacing:.18em;opacity:.72}.sound-icon{display:flex;align-items:end;gap:2px;height:12px}.sound-icon span{width:2px;height:5px;background:currentColor;border-radius:2px;transition:.3s}.sound-toggle.playing .sound-icon span:nth-child(1){height:8px}.sound-toggle.playing .sound-icon span:nth-child(2){height:12px}.sound-toggle.playing .sound-icon span:nth-child(3){height:7px}
+
+.intro{position:relative;z-index:10;height:100svh;display:grid;place-items:center;text-align:center;padding:8vh 6vw;overflow:hidden;transition:1.2s var(--ease)}.intro-leaving{opacity:0;transform:scale(1.04);filter:blur(5px)}.intro-hidden{display:none}.intro-content{position:relative;z-index:2}.eyebrow,.chapter-kicker,.memory-month,.month-kicker,.birthday-kicker{font:9px Arial,sans-serif;letter-spacing:.32em;opacity:.68}.intro h1{margin:18px 0 12px;font-size:clamp(56px,9vw,125px);font-weight:400;line-height:.88;letter-spacing:-.05em}.intro h1 span{display:block;font-style:italic}.intro-subtitle{max-width:520px;margin:0 auto 34px;color:var(--muted);font-size:16px;line-height:1.7}.start-button{display:inline-flex;align-items:center;gap:25px;padding:14px 20px;border:1px solid rgba(255,255,255,.3);border-radius:999px;background:rgba(255,255,255,.035);cursor:pointer;letter-spacing:.16em;font:10px Arial,sans-serif;transition:.45s var(--ease);backdrop-filter:blur(12px)}.start-button:hover{transform:translateY(-3px);background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.6)}.start-button-arrow{font-size:18px}.intro-footer{position:absolute;left:6vw;right:6vw;bottom:32px;display:flex;justify-content:center;gap:18px;align-items:center;font:8px Arial,sans-serif;letter-spacing:.28em;opacity:.55}.footer-line{width:90px;height:1px;background:var(--line)}.intro-decoration{position:absolute;inset:0}.intro-ring{position:absolute;left:50%;top:50%;border:1px solid rgba(255,255,255,.08);border-radius:50%;transform:translate(-50%,-50%);animation:ring 8s ease-in-out infinite}.ring-one{width:35vw;height:35vw}.ring-two{width:55vw;height:55vw;animation-delay:-2s}.ring-three{width:75vw;height:75vw;animation-delay:-4s}
+
+.story{position:relative;z-index:5;height:100svh;opacity:0;pointer-events:none}.story-visible{opacity:1;pointer-events:auto}.chapter-intro,.month-screen,.future-month,.conclusion,.birthday-reveal{position:absolute;inset:0;height:100svh;overflow:hidden}.chapter-intro{display:grid;place-items:center;text-align:center;opacity:0;visibility:hidden}.chapter-active{opacity:1;visibility:visible;animation:chapterIn 2.6s var(--ease) both}.chapter-intro-inner{position:relative;z-index:5}.chapter-number-large{font-size:clamp(120px,25vw,330px);line-height:.75;color:rgba(255,255,255,.055);font-style:italic}.chapter-divider,.birthday-divider{display:flex;justify-content:center;align-items:center;gap:16px;margin:25px 0}.chapter-divider span,.birthday-divider span{width:65px;height:1px;background:var(--line)}.chapter-divider i,.birthday-divider i{color:var(--accent);font-style:normal}.chapter-intro h2{font-size:clamp(35px,5vw,70px);font-weight:400;margin:0}.chapter-intro p:last-child{color:var(--muted)}
+
+.month-screen{opacity:0;visibility:hidden;transition:opacity 1.2s ease}.month-active{opacity:1;visibility:visible}.month-environment,.environment-gradient,.environment-horizon,.environment-ground-glow{position:absolute;inset:0;pointer-events:none}.environment-gradient{background:radial-gradient(ellipse at 50% 55%,rgba(255,255,255,.06),transparent 55%);animation:environment 13s ease-in-out infinite alternate}.environment-horizon{top:auto;height:40%;background:linear-gradient(transparent,rgba(0,0,0,.3))}.environment-ground-glow{inset:auto 8% -28%;height:60%;border-radius:50%;background:radial-gradient(ellipse,rgba(255,175,215,.13),transparent 68%);filter:blur(38px)}.month-header{position:absolute;z-index:30;top:105px;left:5vw;right:5vw;display:flex;justify-content:space-between}.month-heading h2{margin:8px 0 0;font-size:25px;font-weight:400}.month-date-mark{font:9px Arial,sans-serif;letter-spacing:.22em;opacity:.55}.month-info{position:absolute;z-index:40;left:5vw;bottom:7vh;width:min(330px,30vw)}.memory-month{margin-bottom:12px}.month-info h3{font-size:32px;font-style:italic;font-weight:400;margin:0 0 12px}.memory-text{font:13px/1.7 Arial,sans-serif;color:var(--muted);margin:0 0 20px}.voice-button{display:inline-flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(255,255,255,.04);padding:11px 15px;cursor:pointer;backdrop-filter:blur(10px);font:9px Arial,sans-serif;letter-spacing:.08em}.voice-icon{display:flex;align-items:end;gap:2px;height:11px}.voice-bar{width:2px;height:4px;background:currentColor}.voice-button.playing .voice-bar{animation:bars .7s ease-in-out infinite alternate}.voice-button.playing .voice-bar:nth-child(2){animation-delay:.15s}.voice-button.playing .voice-bar:nth-child(3){animation-delay:.3s}.voice-button.playing .voice-bar:nth-child(4){animation-delay:.45s}.chapter-progress{position:absolute;z-index:40;right:5vw;bottom:7vh;font:9px Arial,sans-serif;letter-spacing:.22em;opacity:.55}
+
+.atmosphere-stars,.atmosphere-lanterns,.atmosphere-flowers,.atmosphere-petals,.atmosphere-fireflies,.atmosphere-clouds,.atmosphere-rays{position:absolute;inset:0}.cinematic-star{position:absolute;left:var(--x);top:var(--y);width:var(--size);height:var(--size);border-radius:50%;background:#fff;opacity:.28;animation:twinkle var(--speed) ease-in-out var(--delay) infinite alternate}.cinematic-firefly{position:absolute;left:var(--x);top:var(--y);width:5px;height:5px;border-radius:50%;background:#ffe6a0;box-shadow:0 0 16px 5px rgba(255,220,120,.4);animation:firefly var(--speed) ease-in-out var(--delay) infinite alternate}.cinematic-petal{position:absolute;left:var(--x);top:-8%;width:9px;height:14px;border-radius:80% 20% 80% 20%;background:rgba(255,185,215,.62);transform:rotate(var(--rot));animation:petalFall var(--speed) linear var(--delay) infinite}.cinematic-flower{position:absolute;left:var(--x);top:var(--y);width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,#ffe7a8 0 12%,transparent 14%),conic-gradient(from 0deg,rgba(255,188,218,.72) 0 12%,transparent 12% 20%,rgba(255,188,218,.72) 20% 32%,transparent 32% 40%,rgba(255,188,218,.72) 40% 52%,transparent 52% 60%,rgba(255,188,218,.72) 60% 72%,transparent 72% 80%,rgba(255,188,218,.72) 80% 92%,transparent 92%);filter:drop-shadow(0 0 12px rgba(255,180,220,.25));opacity:.5;animation:flowerSway var(--speed) ease-in-out var(--delay) infinite alternate}.cinematic-lantern{position:absolute;left:var(--x);top:var(--y);width:20px;height:31px;border-radius:45% 45% 35% 35%;background:linear-gradient(90deg,transparent 10%,rgba(255,160,65,.8) 24%,rgba(255,239,174,1) 50%,rgba(255,160,65,.8) 76%,transparent 90%);box-shadow:0 0 26px 8px rgba(255,145,60,.24);opacity:.5;animation:lantern var(--speed) ease-in-out var(--delay) infinite alternate}.cinematic-lantern:after{content:"";position:absolute;left:50%;top:-90px;width:1px;height:90px;background:rgba(255,255,255,.25)}.cinematic-cloud{position:absolute;left:var(--x);top:var(--y);width:30vw;height:11vw;border-radius:50%;background:rgba(255,255,255,.035);filter:blur(30px);animation:cloud var(--speed) ease-in-out var(--delay) infinite alternate}.cinematic-ray{position:absolute;left:var(--x);top:-20%;width:3px;height:150%;background:linear-gradient(transparent,rgba(255,220,240,.1),transparent);filter:blur(9px);animation:ray var(--speed) ease-in-out var(--delay) infinite alternate}.atmosphere-moon{position:absolute;z-index:2;right:8vw;top:12vh;width:125px;height:125px;border-radius:50%;opacity:.3}.moon-body{position:absolute;inset:15%;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#d0dbff 55%,#8995ca);box-shadow:0 0 65px 20px rgba(180,200,255,.18)}.moon-glow{position:absolute;inset:-45%;border-radius:50%;background:rgba(180,200,255,.09);filter:blur(22px);animation:moon 7s ease-in-out infinite alternate}
+
+.transition-system{z-index:70;overflow:hidden;opacity:0}.transition-system.transition-running{opacity:1}.transition-back,.transition-main,.transition-front,.transition-particles{position:absolute;inset:0}.transition-back{background:radial-gradient(circle,rgba(255,255,255,.1),transparent 58%);transform:scale(.5);opacity:0}.transition-front{background:radial-gradient(circle,transparent 25%,rgba(0,0,0,.25) 100%)}.transition-particles:before,.transition-particles:after{content:"";position:absolute;inset:-20%;background-image:radial-gradient(circle,#fff 0 1px,transparent 2px),radial-gradient(circle,rgba(255,190,220,.8) 0 1px,transparent 2px);background-size:75px 75px,125px 125px;opacity:0}.transition-running .transition-particles:before{animation:sparks 1.8s ease forwards}
+
+.story-photo[data-transition="petal-reveal"].photo-enter{animation-name:l1}@keyframes l1{0%{opacity:0;transform:translate(-50%,-50%) translate(10vw,8vh) rotate(2deg) scale(0.72);}55%{opacity:.82;transform:translate(-50%,-50%) translate(2.5vw,2.0vh) rotate(0.6666666666666666deg) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="star-burst"].photo-enter{animation-name:l2}@keyframes l2{0%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(-25deg);}55%{opacity:.82;transform:translate(-50%,-50%) scale(1.08) rotate(5deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="moon-rise"].photo-enter{animation-name:l3}@keyframes l3{0%{opacity:0;transform:translate(-50%,-50%) rotateY(78deg) scale(.82);transform-origin:left center;}55%{opacity:.82;transform:translate(-50%,-50%) rotateY(-12deg) scale(1.02)}100%{opacity:1;transform:translate(-50%,-50%) rotateY(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="water-ripple"].photo-enter{animation-name:l4}@keyframes l4{0%{opacity:0;transform:translate(-50%,-50%) rotateX(78deg) translateY(18vh) scale(.86);transform-origin:50% 100%;}55%{opacity:.82;transform:translate(-50%,-50%) rotateX(-10deg) translateY(-2vh)}100%{opacity:1;transform:translate(-50%,-50%) rotateX(0);filter:none;clip-path:none}}
+.story-photo[data-transition="soft-light"].photo-enter{animation-name:l5}@keyframes l5{0%{opacity:0;transform:translate(-50%,-50%) scale(1.55) rotate(8deg);clip-path:inset(0 50% 0 50%);}55%{opacity:.82;transform:translate(-50%,-50%) scale(.92) rotate(-2deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="rose-bloom"].photo-enter{animation-name:l6}@keyframes l6{0%{opacity:0;transform:translate(-50%,-50%) scale(.5) rotate(-12deg);clip-path:circle(5% at 50% 50%);}55%{opacity:.82;transform:translate(-50%,-50%) scale(.88) rotate(4deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="sparkle-burst"].photo-enter{animation-name:l7}@keyframes l7{0%{opacity:0;transform:translate(-50%,-50%) translateY(-45vh) rotate(-8deg) scale(.8);}55%{opacity:.82;transform:translate(-50%,-50%) translateY(4vh) rotate(3deg)}100%{opacity:1;transform:translate(-50%,-50%) translateY(0) rotate(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="heart-glow"].photo-enter{animation-name:l8}@keyframes l8{0%{opacity:0;transform:translate(-50%,-50%) translateX(-48vw) skewX(-18deg) scale(.78);}55%{opacity:.82;transform:translate(-50%,-50%) translateX(5vw) skewX(3deg)}100%{opacity:1;transform:translate(-50%,-50%) translateX(0) skewX(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="dream-fade"].photo-enter{animation-name:l9}@keyframes l9{0%{opacity:0;transform:translate(-50%,-50%) scale(.75) rotate(12deg);filter:blur(12px) brightness(1.7);}55%{opacity:.82;transform:translate(-50%,-50%) scale(1.04) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="golden-dust"].photo-enter{animation-name:l10}@keyframes l10{0%{opacity:0;transform:translate(-50%,-50%) translate(-39vw,23vh) rotate(-11deg) scale(0.8099999999999999);}55%{opacity:.82;transform:translate(-50%,-50%) translate(-9.75vw,5.75vh) rotate(-3.6666666666666665deg) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="pink-mist"].photo-enter{animation-name:l11}@keyframes l11{0%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(-25deg);}55%{opacity:.82;transform:translate(-50%,-50%) scale(1.08) rotate(5deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="silk-wave"].photo-enter{animation-name:l12}@keyframes l12{0%{opacity:0;transform:translate(-50%,-50%) rotateY(78deg) scale(.82);transform-origin:left center;}55%{opacity:.82;transform:translate(-50%,-50%) rotateY(-12deg) scale(1.02)}100%{opacity:1;transform:translate(-50%,-50%) rotateY(0) scale(1);filter:none;clip-path:none}}
+
+.story-photo[data-transition="candle-glow"].photo-enter{animation-name:l13}@keyframes l13{0%{opacity:0;transform:translate(-50%,-50%) rotateX(78deg) translateY(18vh) scale(.86);transform-origin:50% 100%;}55%{opacity:.82;transform:translate(-50%,-50%) rotateX(-10deg) translateY(-2vh)}100%{opacity:1;transform:translate(-50%,-50%) rotateX(0);filter:none;clip-path:none}}
+.story-photo[data-transition="night-sky"].photo-enter{animation-name:l14}@keyframes l14{0%{opacity:0;transform:translate(-50%,-50%) scale(1.55) rotate(8deg);clip-path:inset(0 50% 0 50%);}55%{opacity:.82;transform:translate(-50%,-50%) scale(.92) rotate(-2deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="floating-petals"].photo-enter{animation-name:l15}@keyframes l15{0%{opacity:0;transform:translate(-50%,-50%) scale(.5) rotate(-12deg);clip-path:circle(5% at 50% 50%);}55%{opacity:.82;transform:translate(-50%,-50%) scale(.88) rotate(4deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="lens-flare"].photo-enter{animation-name:l16}@keyframes l16{0%{opacity:0;transform:translate(-50%,-50%) translateY(-45vh) rotate(-8deg) scale(.8);}55%{opacity:.82;transform:translate(-50%,-50%) translateY(4vh) rotate(3deg)}100%{opacity:1;transform:translate(-50%,-50%) translateY(0) rotate(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="magic-particles"].photo-enter{animation-name:l17}@keyframes l17{0%{opacity:0;transform:translate(-50%,-50%) translateX(-48vw) skewX(-18deg) scale(.78);}55%{opacity:.82;transform:translate(-50%,-50%) translateX(5vw) skewX(3deg)}100%{opacity:1;transform:translate(-50%,-50%) translateX(0) skewX(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="romantic-zoom"].photo-enter{animation-name:l18}@keyframes l18{0%{opacity:0;transform:translate(-50%,-50%) scale(.75) rotate(12deg);filter:blur(12px) brightness(1.7);}55%{opacity:.82;transform:translate(-50%,-50%) scale(1.04) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="light-sweep"].photo-enter{animation-name:l19}@keyframes l19{0%{opacity:0;transform:translate(-50%,-50%) translate(34vw,8vh) rotate(2deg) scale(0.8999999999999999);}55%{opacity:.82;transform:translate(-50%,-50%) translate(8.5vw,2.0vh) rotate(0.6666666666666666deg) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="flower-shower"].photo-enter{animation-name:l20}@keyframes l20{0%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(-25deg);}55%{opacity:.82;transform:translate(-50%,-50%) scale(1.08) rotate(5deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="stardust"].photo-enter{animation-name:l21}@keyframes l21{0%{opacity:0;transform:translate(-50%,-50%) rotateY(78deg) scale(.82);transform-origin:left center;}55%{opacity:.82;transform:translate(-50%,-50%) rotateY(-12deg) scale(1.02)}100%{opacity:1;transform:translate(-50%,-50%) rotateY(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="rose-particles"].photo-enter{animation-name:l22}@keyframes l22{0%{opacity:0;transform:translate(-50%,-50%) rotateX(78deg) translateY(18vh) scale(.86);transform-origin:50% 100%;}55%{opacity:.82;transform:translate(-50%,-50%) rotateX(-10deg) translateY(-2vh)}100%{opacity:1;transform:translate(-50%,-50%) rotateX(0);filter:none;clip-path:none}}
+.story-photo[data-transition="dream-cloud"].photo-enter{animation-name:l23}@keyframes l23{0%{opacity:0;transform:translate(-50%,-50%) scale(1.55) rotate(8deg);clip-path:inset(0 50% 0 50%);}55%{opacity:.82;transform:translate(-50%,-50%) scale(.92) rotate(-2deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="moonlight"].photo-enter{animation-name:l24}@keyframes l24{0%{opacity:0;transform:translate(-50%,-50%) scale(.5) rotate(-12deg);clip-path:circle(5% at 50% 50%);}55%{opacity:.82;transform:translate(-50%,-50%) scale(.88) rotate(4deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="crystal-spark"].photo-enter{animation-name:l25}@keyframes l25{0%{opacity:0;transform:translate(-50%,-50%) translateY(-45vh) rotate(-8deg) scale(.8);}55%{opacity:.82;transform:translate(-50%,-50%) translateY(4vh) rotate(3deg)}100%{opacity:1;transform:translate(-50%,-50%) translateY(0) rotate(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="heart-particles"].photo-enter{animation-name:l26}@keyframes l26{0%{opacity:0;transform:translate(-50%,-50%) translateX(-48vw) skewX(-18deg) scale(.78);}55%{opacity:.82;transform:translate(-50%,-50%) translateX(5vw) skewX(3deg)}100%{opacity:1;transform:translate(-50%,-50%) translateX(0) skewX(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="violet-dream"].photo-enter{animation-name:l27}@keyframes l27{0%{opacity:0;transform:translate(-50%,-50%) scale(.75) rotate(12deg);filter:blur(12px) brightness(1.7);}55%{opacity:.82;transform:translate(-50%,-50%) scale(1.04) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="sunset-glow"].photo-enter{animation-name:l28}@keyframes l28{0%{opacity:0;transform:translate(-50%,-50%) translate(-29vw,23vh) rotate(-11deg) scale(0.99);}55%{opacity:.82;transform:translate(-50%,-50%) translate(-7.25vw,5.75vh) rotate(-3.6666666666666665deg) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="fairy-dust"].photo-enter{animation-name:l29}@keyframes l29{0%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(-25deg);}55%{opacity:.82;transform:translate(-50%,-50%) scale(1.08) rotate(5deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="pink-rain"].photo-enter{animation-name:l30}@keyframes l30{0%{opacity:0;transform:translate(-50%,-50%) rotateY(78deg) scale(.82);transform-origin:left center;}55%{opacity:.82;transform:translate(-50%,-50%) rotateY(-12deg) scale(1.02)}100%{opacity:1;transform:translate(-50%,-50%) rotateY(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="golden-spark"].photo-enter{animation-name:l31}@keyframes l31{0%{opacity:0;transform:translate(-50%,-50%) rotateX(78deg) translateY(18vh) scale(.86);transform-origin:50% 100%;}55%{opacity:.82;transform:translate(-50%,-50%) rotateX(-10deg) translateY(-2vh)}100%{opacity:1;transform:translate(-50%,-50%) rotateX(0);filter:none;clip-path:none}}
+.story-photo[data-transition="nebula"].photo-enter{animation-name:l32}@keyframes l32{0%{opacity:0;transform:translate(-50%,-50%) scale(1.55) rotate(8deg);clip-path:inset(0 50% 0 50%);}55%{opacity:.82;transform:translate(-50%,-50%) scale(.92) rotate(-2deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="soft-bloom"].photo-enter{animation-name:l33}@keyframes l33{0%{opacity:0;transform:translate(-50%,-50%) scale(.5) rotate(-12deg);clip-path:circle(5% at 50% 50%);}55%{opacity:.82;transform:translate(-50%,-50%) scale(.88) rotate(4deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="rose-light"].photo-enter{animation-name:l34}@keyframes l34{0%{opacity:0;transform:translate(-50%,-50%) translateY(-45vh) rotate(-8deg) scale(.8);}55%{opacity:.82;transform:translate(-50%,-50%) translateY(4vh) rotate(3deg)}100%{opacity:1;transform:translate(-50%,-50%) translateY(0) rotate(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="falling-stars"].photo-enter{animation-name:l35}@keyframes l35{0%{opacity:0;transform:translate(-50%,-50%) translateX(-48vw) skewX(-18deg) scale(.78);}55%{opacity:.82;transform:translate(-50%,-50%) translateX(5vw) skewX(3deg)}100%{opacity:1;transform:translate(-50%,-50%) translateX(0) skewX(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="glowing-ribbons"].photo-enter{animation-name:l36}@keyframes l36{0%{opacity:0;transform:translate(-50%,-50%) scale(.75) rotate(12deg);filter:blur(12px) brightness(1.7);}55%{opacity:.82;transform:translate(-50%,-50%) scale(1.04) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="magic-wave"].photo-enter{animation-name:l37}@keyframes l37{0%{opacity:0;transform:translate(-50%,-50%) translate(24vw,8vh) rotate(2deg) scale(0.765);}55%{opacity:.82;transform:translate(-50%,-50%) translate(6.0vw,2.0vh) rotate(0.6666666666666666deg) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="cherry-blossom"].photo-enter{animation-name:l38}@keyframes l38{0%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(-25deg);}55%{opacity:.82;transform:translate(-50%,-50%) scale(1.08) rotate(5deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="cosmic-heart"].photo-enter{animation-name:l39}@keyframes l39{0%{opacity:0;transform:translate(-50%,-50%) rotateY(78deg) scale(.82);transform-origin:left center;}55%{opacity:.82;transform:translate(-50%,-50%) rotateY(-12deg) scale(1.02)}100%{opacity:1;transform:translate(-50%,-50%) rotateY(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="mist-reveal"].photo-enter{animation-name:l40}@keyframes l40{0%{opacity:0;transform:translate(-50%,-50%) rotateX(78deg) translateY(18vh) scale(.86);transform-origin:50% 100%;}55%{opacity:.82;transform:translate(-50%,-50%) rotateX(-10deg) translateY(-2vh)}100%{opacity:1;transform:translate(-50%,-50%) rotateX(0);filter:none;clip-path:none}}
+.story-photo[data-transition="light-particles"].photo-enter{animation-name:l41}@keyframes l41{0%{opacity:0;transform:translate(-50%,-50%) scale(1.55) rotate(8deg);clip-path:inset(0 50% 0 50%);}55%{opacity:.82;transform:translate(-50%,-50%) scale(.92) rotate(-2deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="dreamy-float"].photo-enter{animation-name:l42}@keyframes l42{0%{opacity:0;transform:translate(-50%,-50%) scale(.5) rotate(-12deg);clip-path:circle(5% at 50% 50%);}55%{opacity:.82;transform:translate(-50%,-50%) scale(.88) rotate(4deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="sparkle-wave"].photo-enter{animation-name:l43}@keyframes l43{0%{opacity:0;transform:translate(-50%,-50%) translateY(-45vh) rotate(-8deg) scale(.8);}55%{opacity:.82;transform:translate(-50%,-50%) translateY(4vh) rotate(3deg)}100%{opacity:1;transform:translate(-50%,-50%) translateY(0) rotate(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="romantic-flare"].photo-enter{animation-name:l44}@keyframes l44{0%{opacity:0;transform:translate(-50%,-50%) translateX(-48vw) skewX(-18deg) scale(.78);}55%{opacity:.82;transform:translate(-50%,-50%) translateX(5vw) skewX(3deg)}100%{opacity:1;transform:translate(-50%,-50%) translateX(0) skewX(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="petal-tunnel"].photo-enter{animation-name:l45}@keyframes l45{0%{opacity:0;transform:translate(-50%,-50%) scale(.75) rotate(12deg);filter:blur(12px) brightness(1.7);}55%{opacity:.82;transform:translate(-50%,-50%) scale(1.04) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="starlight-sweep"].photo-enter{animation-name:l46}@keyframes l46{0%{opacity:0;transform:translate(-50%,-50%) translate(-19vw,23vh) rotate(-11deg) scale(0.855);}55%{opacity:.82;transform:translate(-50%,-50%) translate(-4.75vw,5.75vh) rotate(-3.6666666666666665deg) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="rose-galaxy"].photo-enter{animation-name:l47}@keyframes l47{0%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(-25deg);}55%{opacity:.82;transform:translate(-50%,-50%) scale(1.08) rotate(5deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="moon-particles"].photo-enter{animation-name:l48}@keyframes l48{0%{opacity:0;transform:translate(-50%,-50%) rotateY(78deg) scale(.82);transform-origin:left center;}55%{opacity:.82;transform:translate(-50%,-50%) rotateY(-12deg) scale(1.02)}100%{opacity:1;transform:translate(-50%,-50%) rotateY(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="fairy-lights"].photo-enter{animation-name:l49}@keyframes l49{0%{opacity:0;transform:translate(-50%,-50%) rotateX(78deg) translateY(18vh) scale(.86);transform-origin:50% 100%;}55%{opacity:.82;transform:translate(-50%,-50%) rotateX(-10deg) translateY(-2vh)}100%{opacity:1;transform:translate(-50%,-50%) rotateX(0);filter:none;clip-path:none}}
+.story-photo[data-transition="heart-burst"].photo-enter{animation-name:l50}@keyframes l50{0%{opacity:0;transform:translate(-50%,-50%) scale(1.55) rotate(8deg);clip-path:inset(0 50% 0 50%);}55%{opacity:.82;transform:translate(-50%,-50%) scale(.92) rotate(-2deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="pink-galaxy"].photo-enter{animation-name:l51}@keyframes l51{0%{opacity:0;transform:translate(-50%,-50%) scale(.5) rotate(-12deg);clip-path:circle(5% at 50% 50%);}55%{opacity:.82;transform:translate(-50%,-50%) scale(.88) rotate(4deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+.story-photo[data-transition="golden-ripple"].photo-enter{animation-name:l52}@keyframes l52{0%{opacity:0;transform:translate(-50%,-50%) translateY(-45vh) rotate(-8deg) scale(.8);}55%{opacity:.82;transform:translate(-50%,-50%) translateY(4vh) rotate(3deg)}100%{opacity:1;transform:translate(-50%,-50%) translateY(0) rotate(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="flower-explosion"].photo-enter{animation-name:l53}@keyframes l53{0%{opacity:0;transform:translate(-50%,-50%) translateX(-48vw) skewX(-18deg) scale(.78);}55%{opacity:.82;transform:translate(-50%,-50%) translateX(5vw) skewX(3deg)}100%{opacity:1;transform:translate(-50%,-50%) translateX(0) skewX(0) scale(1);filter:none;clip-path:none}}
+.story-photo[data-transition="final-dream"].photo-enter{animation-name:l54}@keyframes l54{0%{opacity:0;transform:translate(-50%,-50%) scale(.75) rotate(12deg);filter:blur(12px) brightness(1.7);}55%{opacity:.82;transform:translate(-50%,-50%) scale(1.04) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:none;clip-path:none}}
+
+.transition-system[data-transition="petal-reveal"] .transition-main{animation:layer-bloom 1.8s var(--ease) forwards}.transition-system[data-transition="star-burst"] .transition-main{animation:layer-stars 1.8s var(--ease) forwards}.transition-system[data-transition="moon-rise"] .transition-main{animation:layer-moon 1.8s var(--ease) forwards}.transition-system[data-transition="water-ripple"] .transition-main{animation:layer-ripple 1.8s var(--ease) forwards}.transition-system[data-transition="soft-light"] .transition-main{animation:layer-sweep 1.8s var(--ease) forwards}.transition-system[data-transition="rose-bloom"] .transition-main{animation:layer-mist 1.8s var(--ease) forwards}.transition-system[data-transition="sparkle-burst"] .transition-main{animation:layer-bloom 1.8s var(--ease) forwards}.transition-system[data-transition="heart-glow"] .transition-main{animation:layer-stars 1.8s var(--ease) forwards}.transition-system[data-transition="dream-fade"] .transition-main{animation:layer-moon 1.8s var(--ease) forwards}.transition-system[data-transition="golden-dust"] .transition-main{animation:layer-ripple 1.8s var(--ease) forwards}.transition-system[data-transition="pink-mist"] .transition-main{animation:layer-sweep 1.8s var(--ease) forwards}.transition-system[data-transition="silk-wave"] .transition-main{animation:layer-mist 1.8s var(--ease) forwards}.transition-system[data-transition="candle-glow"] .transition-main{animation:layer-bloom 1.8s var(--ease) forwards}.transition-system[data-transition="night-sky"] .transition-main{animation:layer-stars 1.8s var(--ease) forwards}.transition-system[data-transition="floating-petals"] .transition-main{animation:layer-moon 1.8s var(--ease) forwards}.transition-system[data-transition="lens-flare"] .transition-main{animation:layer-ripple 1.8s var(--ease) forwards}.transition-system[data-transition="magic-particles"] .transition-main{animation:layer-sweep 1.8s var(--ease) forwards}.transition-system[data-transition="romantic-zoom"] .transition-main{animation:layer-mist 1.8s var(--ease) forwards}.transition-system[data-transition="light-sweep"] .transition-main{animation:layer-bloom 1.8s var(--ease) forwards}.transition-system[data-transition="flower-shower"] .transition-main{animation:layer-stars 1.8s var(--ease) forwards}.transition-system[data-transition="stardust"] .transition-main{animation:layer-moon 1.8s var(--ease) forwards}.transition-system[data-transition="rose-particles"] .transition-main{animation:layer-ripple 1.8s var(--ease) forwards}.transition-system[data-transition="dream-cloud"] .transition-main{animation:layer-sweep 1.8s var(--ease) forwards}.transition-system[data-transition="moonlight"] .transition-main{animation:layer-mist 1.8s var(--ease) forwards}.transition-system[data-transition="crystal-spark"] .transition-main{animation:layer-bloom 1.8s var(--ease) forwards}.transition-system[data-transition="heart-particles"] .transition-main{animation:layer-stars 1.8s var(--ease) forwards}.transition-system[data-transition="violet-dream"] .transition-main{animation:layer-moon 1.8s var(--ease) forwards}.transition-system[data-transition="sunset-glow"] .transition-main{animation:layer-ripple 1.8s var(--ease) forwards}.transition-system[data-transition="fairy-dust"] .transition-main{animation:layer-sweep 1.8s var(--ease) forwards}.transition-system[data-transition="pink-rain"] .transition-main{animation:layer-mist 1.8s var(--ease) forwards}.transition-system[data-transition="golden-spark"] .transition-main{animation:layer-bloom 1.8s var(--ease) forwards}.transition-system[data-transition="nebula"] .transition-main{animation:layer-stars 1.8s var(--ease) forwards}.transition-system[data-transition="soft-bloom"] .transition-main{animation:layer-moon 1.8s var(--ease) forwards}.transition-system[data-transition="rose-light"] .transition-main{animation:layer-ripple 1.8s var(--ease) forwards}.transition-system[data-transition="falling-stars"] .transition-main{animation:layer-sweep 1.8s var(--ease) forwards}.transition-system[data-transition="glowing-ribbons"] .transition-main{animation:layer-mist 1.8s var(--ease) forwards}.transition-system[data-transition="magic-wave"] .transition-main{animation:layer-bloom 1.8s var(--ease) forwards}.transition-system[data-transition="cherry-blossom"] .transition-main{animation:layer-stars 1.8s var(--ease) forwards}.transition-system[data-transition="cosmic-heart"] .transition-main{animation:layer-moon 1.8s var(--ease) forwards}.transition-system[data-transition="mist-reveal"] .transition-main{animation:layer-ripple 1.8s var(--ease) forwards}.transition-system[data-transition="light-particles"] .transition-main{animation:layer-sweep 1.8s var(--ease) forwards}.transition-system[data-transition="dreamy-float"] .transition-main{animation:layer-mist 1.8s var(--ease) forwards}.transition-system[data-transition="sparkle-wave"] .transition-main{animation:layer-bloom 1.8s var(--ease) forwards}.transition-system[data-transition="romantic-flare"] .transition-main{animation:layer-stars 1.8s var(--ease) forwards}.transition-system[data-transition="petal-tunnel"] .transition-main{animation:layer-moon 1.8s var(--ease) forwards}.transition-system[data-transition="starlight-sweep"] .transition-main{animation:layer-ripple 1.8s var(--ease) forwards}.transition-system[data-transition="rose-galaxy"] .transition-main{animation:layer-sweep 1.8s var(--ease) forwards}.transition-system[data-transition="moon-particles"] .transition-main{animation:layer-mist 1.8s var(--ease) forwards}.transition-system[data-transition="fairy-lights"] .transition-main{animation:layer-bloom 1.8s var(--ease) forwards}.transition-system[data-transition="heart-burst"] .transition-main{animation:layer-stars 1.8s var(--ease) forwards}.transition-system[data-transition="pink-galaxy"] .transition-main{animation:layer-moon 1.8s var(--ease) forwards}.transition-system[data-transition="golden-ripple"] .transition-main{animation:layer-ripple 1.8s var(--ease) forwards}.transition-system[data-transition="flower-explosion"] .transition-main{animation:layer-sweep 1.8s var(--ease) forwards}.transition-system[data-transition="final-dream"] .transition-main{animation:layer-mist 1.8s var(--ease) forwards}
+
+@keyframes layer-bloom{0%{opacity:0;transform:scale(.15);clip-path:circle(0 at 50% 50%)}35%{opacity:1}100%{opacity:0;transform:scale(1.55);clip-path:circle(75% at 50% 50%)}}@keyframes layer-stars{0%{opacity:0;transform:scale(.55)}35%{opacity:.9}100%{opacity:0;transform:scale(1.5) rotate(25deg)}}@keyframes layer-moon{0%{opacity:0;transform:translateY(35%)}45%{opacity:.9}100%{opacity:0;transform:translateY(-12%)}}@keyframes layer-ripple{0%{opacity:0;transform:scale(.2)}35%{opacity:.8}100%{opacity:0;transform:scale(2)}}@keyframes layer-sweep{0%{opacity:0;transform:translateX(-110%)}30%{opacity:.9}100%{opacity:0;transform:translateX(110%)}}@keyframes layer-mist{0%{opacity:0;transform:scale(.7);filter:blur(18px)}45%{opacity:.8}100%{opacity:0;transform:scale(1.3);filter:blur(4px)}}@keyframes photoDrift{0%{transform:translate(calc(-50% + var(--mouse-x,0px)),calc(-50% + var(--mouse-y,0px))) scale(1) rotate(0)}100%{transform:translate(calc(-50% + var(--drift-x) + var(--mouse-x,0px)),calc(-50% + var(--drift-y) + var(--mouse-y,0px))) scale(var(--drift-s)) rotate(var(--drift-r))}}@keyframes progress{from{width:0}to{width:100%}}@keyframes ambient{from{transform:scale(1)}to{transform:scale(1.06)}}@keyframes orb1{from{transform:translate(0,0)}to{transform:translate(8vw,-4vh)}}@keyframes orb2{from{transform:translate(0,0)}to{transform:translate(-7vw,5vh)}}@keyframes ring{0%,100%{transform:translate(-50%,-50%) scale(.98);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.04);opacity:1}}@keyframes chapterIn{0%{opacity:0;transform:scale(1.08);filter:blur(8px)}100%{opacity:1;transform:none;filter:none}}@keyframes environment{from{transform:scale(1)}to{transform:scale(1.08) translateX(1%)}}@keyframes light{from{transform:translate(-50%,-50%) scale(.9);opacity:.5}to{transform:translate(-45%,-55%) scale(1.15);opacity:1}}@keyframes twinkle{from{opacity:.12;transform:scale(.7)}to{opacity:.9;transform:scale(1.6)}}@keyframes firefly{from{transform:translate(0,0);opacity:.15}to{transform:translate(25px,-35px);opacity:.9}}@keyframes petalFall{0%{transform:translate3d(0,-5vh,0) rotate(0)}50%{transform:translate3d(40px,45vh,0) rotate(160deg)}100%{transform:translate3d(-25px,110vh,0) rotate(330deg)}}@keyframes flowerSway{from{transform:rotate(-12deg) scale(.8)}to{transform:rotate(12deg) scale(1.08)}}@keyframes lantern{from{transform:translateY(-8px) rotate(-3deg);opacity:.25}to{transform:translateY(15px) rotate(3deg);opacity:.7}}@keyframes cloud{from{transform:translateX(-5vw)}to{transform:translateX(10vw)}}@keyframes ray{from{opacity:.05;transform:rotate(-22deg) translateX(-8vw)}to{opacity:.3;transform:rotate(-14deg) translateX(8vw)}}@keyframes moon{from{transform:scale(.92);opacity:.15}to{transform:scale(1.06);opacity:.35}}@keyframes sparks{0%{opacity:0;transform:scale(.8)}25%{opacity:1}100%{opacity:0;transform:scale(1.2)}}@keyframes bars{from{height:3px}to{height:12px}}
+
+.future-month,.conclusion,.birthday-reveal{display:grid;place-items:center;opacity:0;visibility:hidden;pointer-events:none}.future-month-inner,.conclusion-inner,.birthday-content{text-align:center}.future-month-number,.birthday-number{font-size:25vw;color:rgba(255,255,255,.055);line-height:.7}.future-month h2{font-size:45px;font-weight:400}.future-month p,.final-text,.birthday-message{color:var(--muted)}.conclusion-inner,.birthday-content{max-width:650px}.conclusion h2,.birthday-content h2{font-size:clamp(45px,7vw,90px);font-weight:400;font-style:italic;margin:15px 0}.final-text,.birthday-message{font-size:16px;line-height:1.8}.birthday-button{margin-top:25px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.04);padding:13px 20px;cursor:pointer}.birthday-button:disabled{opacity:.45;cursor:not-allowed}.birthday-signature{display:flex;justify-content:center;align-items:center;gap:15px;font:9px Arial,sans-serif;letter-spacing:.3em;opacity:.6}.signature-line{width:50px;height:1px;background:var(--line)}
+
+@media(max-width:800px){.site-header{padding:20px 5vw}.month-header{top:78px}.month-info{left:5vw;bottom:6vh;width:58vw}.month-info h3{font-size:27px}.memory-text{font-size:11px}.story-photo{width:100vw;height:88vh}.atmosphere-moon{right:5vw;top:10vh;width:78px;height:78px}.intro h1{font-size:17vw}.intro-subtitle{font-size:14px}.intro-footer{bottom:22px}.chapter-number-large{font-size:35vw}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+
+/* =========================================================
+   PHOTO STAGE — FIX
+   ========================================================= */
+
+.photo-stage{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    z-index:10;
+}
+
+.month-photos{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+.story-photo{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:min(72vw, 980px);
+    height:88vh;
+    object-fit:contain;
+    object-position:center;
+    transform:translate(-50%,-50%);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    z-index:1;
+    will-change:transform,opacity,filter;
+}
+
+.story-photo.active{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    z-index:20;
+}
+
+.story-photo.previous,
+.story-photo.next{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
+
+.story-photo.photo-enter{
+    visibility:visible;
+    pointer-events:auto;
+    z-index:20;
+}
+
+.story-photo.photo-drifting{
+    visibility:visible;
+    pointer-events:auto;
+    z-index:20;
+}
+
+.photo-overlay{
+    position:absolute;
+    inset:0;
+    z-index:25;
+    pointer-events:none;
+}
+.photo-stage{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+.month-photos{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+.story-photo{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:center;
+    transform:translate(-50%,-50%);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    z-index:2;
+    will-change:transform,opacity;
+}
+
+.story-photo.active{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    z-index:5;
+}
+
+.story-photo.previous,
+.story-photo.next{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
+
+/* =====================================================
+   PHOTO MOTION WRAPPER
+   Movement is isolated from photo transitions
+===================================================== */
+
+.photo-motion {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+
+    --drift-x: 0px;
+    --drift-y: 0px;
+    --drift-r: 0deg;
+    --drift-s: 1;
+    --drift-duration: 5.5s;
+}
+
+.photo-motion.photo-drifting {
+    animation-name: photoWrapperDrift;
+    animation-duration: var(--drift-duration);
+    animation-timing-function: cubic-bezier(.22, .61, .36, 1);
+    animation-fill-mode: both;
+    animation-iteration-count: 1;
+    will-change: transform;
+}
+
+@keyframes photoWrapperDrift {
+    0% {
+        transform: translate3d(0, 0, 0)
+                   scale(1)
+                   rotate(0deg);
+    }
+
+    100% {
+        transform:
+            translate3d(
+                var(--drift-x),
+                var(--drift-y),
+                0
+            )
+            scale(var(--drift-s))
+            rotate(var(--drift-r));
+    }
+}
+/* =========================================================
+   8 DISTINCT CINEMATIC PHOTO MOVEMENTS
+   4.5s MOVEMENT + 1s STABLE
+   ========================================================= */
+
+/* =========================================================
+   PHASE 1 — SMOOTH CINEMATIC PHOTO MOVEMENT
+   ========================================================= */
+
+.story-photo.photo-drifting {
+    animation-duration: 5s;
+    animation-timing-function: cubic-bezier(.22, .85, .28, 1);
+    animation-fill-mode: both;
+    animation-iteration-count: 1;
+    will-change: transform, translate, scale, rotate;
+
+    translate: 0 0;
+    scale: 1;
+    rotate: 0deg;
+}
+
+
+/* 01 — ZOOM IN */
+.story-photo.movement-0 { animation-name: photoMoveZoomIn; }
+
+@keyframes photoMoveZoomIn {
+    0% { scale: 1; }
+    52% { scale: 1.14; }
+    94% { scale: 1; }
+    100% { scale: 1; }
+}
+
+/* 02 — ZOOM OUT */
+.story-photo.movement-1 { animation-name: photoMoveZoomOut; }
+
+@keyframes photoMoveZoomOut {
+    0% { scale: 1; }
+    52% { scale: .86; }
+    94% { scale: 1; }
+    100% { scale: 1; }
+}
+
+
+/* 03 — LEFT */
+.story-photo.movement-2 {
+    animation-name: photoMoveLeft;
+}
+
+@keyframes photoMoveLeft {
+    0% {
+        translate: 0 0;
+        scale: 1.03;
+    }
+
+    52% {
+        translate: -140px 0;
+        scale: 1.08;
+    }
+
+    94% {
+        translate: 0 0;
+        scale: 1;
+    }
+
+    100% {
+        translate: 0 0;
+        scale: 1;
+    }
+}
+
+
+/* 04 — RIGHT */
+.story-photo.movement-3 {
+    animation-name: photoMoveRight;
+}
+
+@keyframes photoMoveRight {
+    0% {
+        translate: 0 0;
+        scale: 1.03;
+    }
+
+    52% {
+        translate: 140px 0;
+        scale: 1.08;
+    }
+
+    94% {
+        translate: 0 0;
+        scale: 1;
+    }
+
+    100% {
+        translate: 0 0;
+        scale: 1;
+    }
+}
+
+
+/* 05 — UP */
+.story-photo.movement-4 {
+    animation-name: photoMoveUp;
+}
+
+@keyframes photoMoveUp {
+    0% {
+        translate: 0 0;
+        scale: 1.03;
+    }
+
+    52% {
+        translate: 0 -120px;
+        scale: 1.08;
+    }
+
+    94% {
+        translate: 0 0;
+        scale: 1;
+    }
+
+    100% {
+        translate: 0 0;
+        scale: 1;
+    }
+}
+
+
+/* 06 — DOWN */
+.story-photo.movement-5 {
+    animation-name: photoMoveDown;
+}
+
+@keyframes photoMoveDown {
+    0% {
+        translate: 0 0;
+        scale: 1.03;
+    }
+
+    52% {
+        translate: 0 120px;
+        scale: 1.08;
+    }
+
+    94% {
+        translate: 0 0;
+        scale: 1;
+    }
+
+    100% {
+        translate: 0 0;
+        scale: 1;
+    }
+}
+
+
+/* 07 — DIAGONAL */
+.story-photo.movement-6 {
+    animation-name: photoMoveDiagonal;
+}
+
+@keyframes photoMoveDiagonal {
+    0% {
+        translate: -80px 70px;
+        rotate: -0.8deg;
+        scale: 1.03;
+    }
+
+    52% {
+        translate: 100px -90px;
+        rotate: 1deg;
+        scale: 1.09;
+    }
+
+    94% {
+        translate: 0 0;
+        rotate: 0deg;
+        scale: 1;
+    }
+
+    100% {
+        translate: 0 0;
+        rotate: 0deg;
+        scale: 1;
+    }
+}
+
+
+/* 08 — OPPOSITE DIAGONAL */
+.story-photo.movement-7 {
+    animation-name: photoMoveDiagonalReverse;
+}
+
+@keyframes photoMoveDiagonalReverse {
+    0% {
+        translate: 80px -70px;
+        rotate: 0.8deg;
+        scale: 1.03;
+    }
+
+    52% {
+        translate: -100px 90px;
+        rotate: -1deg;
+        scale: 1.09;
+    }
+
+    94% {
+        translate: 0 0;
+        rotate: 0deg;
+        scale: 1;
+    }
+
+    100% {
+        translate: 0 0;
+        rotate: 0deg;
+        scale: 1;
+    }
+}
+
+/* =========================================================
+   GALLERY CONTROLS AND ANIMATION GUARDRAILS
+   ========================================================= */
+
+.cinematic-photo-stage,
+.photo-world,
+.month-photos {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.cinematic-photo-stage {
+    z-index: 10;
+}
+
+.photo-world {
+    isolation: isolate;
+}
+
+.story-photo.photo-enter {
+    animation-duration: 1.85s;
+    animation-timing-function: var(--ease);
+    animation-fill-mode: both;
+}
+
+.photo-progress {
+    position: absolute;
+    z-index: 40;
+    right: 5vw;
+    bottom: 9vh;
+    width: min(180px, 28vw);
+    height: 2px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, .2);
+}
+
+.photo-progress-fill {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: var(--accent);
+    transform-origin: left center;
+}
+
+.photo-progress-fill.progress-running {
+    animation: photoProgress 6.5s linear both;
+}
+
+.photo-navigation {
+    position: absolute;
+    z-index: 45;
+    right: 5vw;
+    top: 50%;
+    display: flex;
+    gap: 10px;
+    transform: translateY(-50%);
+}
+
+.photo-nav-button {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, .32);
+    border-radius: 50%;
+    color: inherit;
+    background: rgba(11, 7, 16, .22);
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    backdrop-filter: blur(10px);
+    transition: background .2s ease, transform .2s ease, opacity .2s ease;
+}
+
+.photo-nav-button:hover:not(:disabled),
+.photo-nav-button:focus-visible:not(:disabled) {
+    background: rgba(255, 255, 255, .16);
+    outline: none;
+    transform: scale(1.06);
+}
+
+.photo-nav-button:disabled {
+    cursor: not-allowed;
+    opacity: .35;
+}
+
+.empty-gallery {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 5;
+    max-width: min(420px, 80vw);
+    margin: 0;
+    padding: 18px 22px;
+    color: var(--muted);
+    text-align: center;
+    background: rgba(10, 6, 14, .32);
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: 16px;
+    transform: translate(-50%, -50%);
+    backdrop-filter: blur(12px);
+}
+
+.empty-gallery code {
+    color: inherit;
+}
+
+@keyframes photoProgress {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@media (max-width: 800px) {
+    .photo-navigation {
+        top: auto;
+        right: 5vw;
+        bottom: 13vh;
+    }
+
+    .photo-progress {
+        bottom: 11vh;
+    }
+}
+
+/* =========================================================
+   PHASE 2C — SOFTER TRANSITION LAYERS
+   ========================================================= */
+
+.transition-system .transition-main {
+    animation-timing-function: cubic-bezier(.22, .80, .25, 1) !important;
+}
+/* =========================================================
+   PHOTO MOTION WRAPPER
+   Movement belongs to wrapper.
+   Story photo keeps only its transition.
+========================================================= */
+
+.photo-motion {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+
+    --drift-x: 0px;
+    --drift-y: 0px;
+    --drift-r: 0deg;
+    --drift-s: 1;
+    --drift-duration: 10s;
+}
+
+.photo-motion.photo-drifting {
+    animation-name: photoWrapperDrift;
+    animation-duration: var(--drift-duration);
+    animation-timing-function: cubic-bezier(.22, .61, .36, 1);
+    animation-fill-mode: both;
+    animation-iteration-count: 1;
+
+    will-change: transform;
+}
+
+@keyframes photoWrapperDrift {
+    0% {
+        transform:
+            translate3d(0, 0, 0)
+            scale(1)
+            rotate(0deg);
+    }
+
+    100% {
+        transform:
+            translate3d(
+                var(--drift-x),
+                var(--drift-y),
+                0
+            )
+            scale(var(--drift-s))
+            rotate(var(--drift-r));
+    }
+}
+
+
+/* =========================================================
+   HIDE PHOTO NAVIGATION ARROWS
+========================================================= */
+
+.photo-prev,
+.photo-next {
+    display: none !important;
+}
+
+/* Navigation arrows hidden - final */
+.photo-navigation,
+.photo-prev,
+.photo-next,
+.photo-nav-button {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+/* =========================================================
+   INTERACTIVE PHYSICS BACKGROUND
+   ========================================================= */
+
+.interactive-strands {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 3;
+
+    pointer-events: none;
+    opacity: .72;
+
+    mix-blend-mode: screen;
+}
