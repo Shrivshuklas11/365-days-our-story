@@ -690,3 +690,333 @@ body[data-theme="cosmic-night"]{--bg1:#02030a;--bg2:#111a3d;--bg3:#492960;--acce
 
     mix-blend-mode: screen;
 }
+/* =========================================================
+   MOBILE STORY — DEDICATED PORTRAIT COMPOSITION
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    html,
+    body {
+        width: 100%;
+        min-width: 0;
+        overflow-x: hidden;
+    }
+
+    .story {
+        width: 100%;
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .month-screen {
+        position: relative !important;
+
+        width: 100vw !important;
+        height: 100svh !important;
+        min-height: 100svh !important;
+
+        padding: 0 !important;
+
+        display: block !important;
+
+        overflow: hidden !important;
+    }
+
+    /* Photo world fills phone */
+    .cinematic-photo-stage,
+    .photo-stage {
+        position: absolute !important;
+
+        inset: 0 !important;
+
+        width: 100vw !important;
+        height: 100svh !important;
+
+        overflow: hidden !important;
+    }
+
+    .photo-world {
+        position: absolute !important;
+
+        inset: 0 !important;
+
+        width: 100% !important;
+        height: 100% !important;
+
+        overflow: hidden !important;
+    }
+
+    .month-photos {
+        position: absolute !important;
+
+        inset: 0 !important;
+
+        width: 100% !important;
+        height: 100% !important;
+
+        display: flex !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        overflow: hidden !important;
+    }
+
+    /* Photo */
+    .month-photos .story-photo,
+    .story-photo {
+        position: absolute !important;
+
+        left: 50% !important;
+        top: 43% !important;
+
+        width: auto !important;
+        height: auto !important;
+
+        max-width: 82vw !important;
+        max-height: 66svh !important;
+
+        object-fit: contain !important;
+        object-position: center !important;
+
+        transform:
+            translate(-50%, -50%) !important;
+    }
+
+    .photo-motion {
+        position: absolute !important;
+
+        left: 50% !important;
+        top: 43% !important;
+
+        width: 100% !important;
+        height: 100% !important;
+
+        pointer-events: none;
+    }
+
+    /* Keep cinematic effects behind photo */
+    .photo-atmosphere,
+    .photo-haze,
+    .photo-light,
+    .photo-shadow,
+    .photo-overlay {
+        position: absolute !important;
+
+        inset: 0 !important;
+
+        pointer-events: none !important;
+    }
+
+    .photo-atmosphere {
+        z-index: 3 !important;
+    }
+
+    .photo-overlay {
+        z-index: 8 !important;
+    }
+
+    /* Header */
+    .month-header {
+        position: absolute !important;
+
+        top: 72px !important;
+        left: 0 !important;
+        right: 0 !important;
+
+        padding:
+            0 20px !important;
+
+        z-index: 50 !important;
+    }
+
+    .month-heading h2 {
+        font-size:
+            clamp(24px, 8vw, 38px) !important;
+    }
+
+    .month-kicker {
+        font-size: 8px !important;
+        letter-spacing: .28em !important;
+    }
+
+    .month-date-mark {
+        font-size: 8px !important;
+    }
+
+    /* Information moves below photo */
+    .month-info {
+        position: absolute !important;
+
+        left: 20px !important;
+        right: 20px !important;
+        bottom: 38px !important;
+
+        width: auto !important;
+        max-width: none !important;
+
+        padding: 0 !important;
+
+        text-align: left !important;
+
+        z-index: 45 !important;
+    }
+
+    .memory-month {
+        font-size: 8px !important;
+        letter-spacing: .25em !important;
+    }
+
+    .month-info h3 {
+        margin:
+            7px 0 8px !important;
+
+        font-size:
+            clamp(28px, 9vw, 44px) !important;
+
+        line-height: 1 !important;
+    }
+
+    .memory-text {
+        max-width: 310px !important;
+
+        margin: 0 !important;
+
+        font-size: 10px !important;
+
+        line-height: 1.65 !important;
+    }
+
+    /* Audio button */
+    .voice-button {
+        margin-top: 10px !important;
+
+        transform: scale(.88);
+
+        transform-origin: left center;
+    }
+
+    /* Counter */
+    .photo-counter {
+        top: 88px !important;
+        right: 20px !important;
+
+        z-index: 55 !important;
+    }
+
+    /* Progress */
+    .photo-progress {
+        right: 20px !important;
+        left: 20px !important;
+
+        bottom: 20px !important;
+
+        width: auto !important;
+    }
+
+    /* Hide navigation arrows */
+    .photo-navigation,
+    .photo-prev,
+    .photo-next,
+    .photo-nav-button {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
+    /* Existing interactive strands */
+    .interactive-strands {
+        position: absolute !important;
+
+        inset: 0 !important;
+
+        width: 100% !important;
+        height: 100% !important;
+
+        z-index: 4 !important;
+
+        pointer-events: none !important;
+
+        opacity: .55 !important;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .month-header {
+        top: 65px !important;
+    }
+
+    .month-photos .story-photo,
+    .story-photo {
+        max-width: 78vw !important;
+        max-height: 61svh !important;
+    }
+
+    .month-info {
+        bottom: 34px !important;
+    }
+
+    .month-info h3 {
+        font-size: 29px !important;
+    }
+
+    .memory-text {
+        max-width: 280px !important;
+        font-size: 9px !important;
+    }
+}
+
+
+/* =========================================================
+   LANDSCAPE PHONE
+   ========================================================= */
+
+@media (max-width: 900px) and (orientation: landscape) {
+
+    .month-screen {
+        height: 100svh !important;
+        min-height: 100svh !important;
+    }
+
+    .month-photos .story-photo,
+    .story-photo {
+        top: 50% !important;
+
+        max-width: 54vw !important;
+        max-height: 78svh !important;
+    }
+
+    .month-info {
+        left: 5vw !important;
+        bottom: 7vh !important;
+
+        width: 32vw !important;
+
+        text-align: left !important;
+    }
+
+    .month-info h3 {
+        font-size:
+            clamp(24px, 4vw, 42px) !important;
+    }
+
+    .memory-text {
+        max-width: 30vw !important;
+    }
+
+    .month-header {
+        top: 45px !important;
+    }
+
+    .photo-counter {
+        top: 48px !important;
+        right: 5vw !important;
+    }
+}
