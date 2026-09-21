@@ -15,18 +15,48 @@ document.addEventListener("DOMContentLoaded", () => {
     const story = $("#story");
     const header = $("#siteHeader");
     const chapter = $("#chapter-01-intro");
-    const month = $("#month-01");
-    const stage = $("#photo-stage-01");
-    const world = $("#photo-world-01");
-    const gallery = $("#photos-01");
-    const currentEl = $("#photo-current-01");
-    const totalEl = $("#photo-total-01");
-    const progress = $("#photo-progress-01 .photo-progress-fill");
-    const previousButton = $("#previousPhoto");
-    const nextButton = $("#nextPhoto");
-    const audio = $("#month-01-audio");
+    let month = $("#month-01");
+    let stage = $("#photo-stage-01");
+    let world = $("#photo-world-01");
+    let gallery = $("#photos-01");
+    let currentEl = $("#photo-current-01");
+    let totalEl = $("#photo-total-01");
+    let progress = $("#photo-progress-01 .photo-progress-fill");
+    let previousButton = $("#previousPhoto");
+    let nextButton = $("#nextPhoto");
+    let audio = $("#month-01-audio");
     const voice = $("#voice-button-01");
     const sound = $("#globalSoundToggle");
+
+    /* =====================================================
+       MULTI-MONTH STORY CONTROLLER
+       12 months • 54 cinematic transitions • 2s/photo
+       ===================================================== */
+
+    const TOTAL_MONTHS = 12;
+    let currentMonthNumber = 1;
+    let globalPhotoIndex = 0;
+    let storyCompleted = false;
+    let audioPlaylist = [];
+    let audioPlaylistIndex = 0;
+    let currentAudio = null;
+    let graphicTimer = null;
+
+    const conclusionScreen = $("#conclusion");
+    const birthdayRevealScreen = $("#birthdayReveal");
+    const storyNavigation = $("#storyNavigation");
+
+    const monthAudioCandidates = monthNumber => {
+        const n = String(monthNumber).padStart(2, "0");
+        const list = [];
+        /* Main track first. Extra tracks continue automatically. */
+        ["mpeg", "mp3"].forEach(ext => list.push(`month-${n}.${ext}`));
+        for (let i = 2; i <= 20; i++) {
+            ["mp3", "mpeg"].forEach(ext => list.push(`month-${n}-${String(i).padStart(2,"0")}.${ext}`));
+        }
+        return list;
+    };
+
 
     const transitionSystem = $("#transitionSystem");
     const transitionBack = $("#transitionBack");
@@ -38,10 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
    Movement is separated from photo transitions
 ===================================================== */
 
-function wrapPhotosForMotion() {
-    if (!gallery) return;
+function wrapPhotosForMotion(targetGallery = gallery) {
+    if (!targetGallery) return;
 
-    $$(".story-photo", gallery).forEach(photo => {
+    $$(".story-photo", targetGallery).forEach(photo => {
         if (
             photo.parentElement?.classList.contains("photo-motion")
         ) {
@@ -58,7 +88,7 @@ function wrapPhotosForMotion() {
 
 wrapPhotosForMotion();
 
-const photos = $$(".story-photo", gallery);     
+let photos = $$(".story-photo", gallery);     
 
     /* =====================================================
        54 UNIQUE TRANSITIONS
@@ -158,8 +188,8 @@ const photos = $$(".story-photo", gallery);
         touchY: 0
     };
 
-    const PHOTO_DURATION = 5500;
-    const TRANSITION_DURATION = 1850;
+    const PHOTO_DURATION = 2000;
+    const TRANSITION_DURATION = 1300;
 
     /* =====================================================
        THEME
@@ -299,7 +329,7 @@ function applyMovement(photo, index) {
 
     motion.style.setProperty(
         "--drift-duration",
-        `${m.d}s`
+        `${Math.min(2, m.d)}s`
     );
 
     motion.classList.remove(
@@ -453,9 +483,11 @@ function applyMovement(photo, index) {
 
     const transition =
         TRANSITIONS[
-            newIndex %
+            globalPhotoIndex %
             TRANSITIONS.length
         ];
+
+    globalPhotoIndex++;
 
     setTheme(newIndex);
 
@@ -560,70 +592,84 @@ function applyMovement(photo, index) {
     );
     
     triggerAtmosphere(
-    transition,
-    newIndex
-);
-
-/* START MOVEMENT + TIMER IMMEDIATELY */
-applyMovement(
-    newPhoto,
-    newIndex
-);
-
-startTimer();
-
-/* -----------------------------------------
-   FINISH TRANSITION
------------------------------------------ */
-
-clearTimeout(state.transitionTimer);
-
-state.transitionTimer = setTimeout(() => {
-
-    photos.forEach(photo => {
-
-        if (photo !== newPhoto) {
-
-            photo.classList.remove(
-                "active",
-                "photo-enter",
-                "photo-exit",
-                "photo-forward",
-                "photo-backward",
-                "photo-drifting"
-            );
-
-            photo.style.opacity = "0";
-            photo.style.visibility = "hidden";
-        }
-
-    });
-
-    newPhoto.classList.remove(
-        "photo-enter",
-        "photo-forward",
-        "photo-backward",
-        "photo-exit"
+        transition,
+        newIndex
     );
 
-    newPhoto.classList.add(
-        "active"
+    /* Movement begins immediately and overlaps the 1.3s transition.
+       This keeps the full 2.0s photo cycle smooth instead of adding
+       1.3s on top of the photo duration. */
+    applyMovement(
+        newPhoto,
+        newIndex
     );
 
-    newPhoto.style.opacity = "1";
-    newPhoto.style.visibility = "visible";
 
-    neighbourClasses();
+    /* -----------------------------------------
+       FINISH TRANSITION
+    ----------------------------------------- */
 
-    layerReset();
+    clearTimeout(state.transitionTimer);
 
-    state.transitioning = false;
+    state.transitionTimer = setTimeout(() => {
 
-    updateCounter();
+        photos.forEach(photo => {
 
-}, TRANSITION_DURATION);
+            if (photo !== newPhoto) {
 
-}
+                photo.classList.remove(
+                    "active",
+                    "photo-enter",
+                    "photo-exit",
+                    "photo-forward",
+                    "photo-backward",
+                    "photo-drifting"
+                );
+
+                photo.style.opacity =
+                    "0";
+
+                photo.style.visibility =
+                    "hidden";
+            }
+
+        });
+
+
+        newPhoto.classList.remove(
+            "photo-enter",
+            "photo-forward",
+            "photo-backward",
+            "photo-exit"
+        );
+
+        newPhoto.classList.add(
+            "active"
+        );
+
+        newPhoto.style.opacity =
+            "1";
+
+        newPhoto.style.visibility =
+            "visible";
+
+
+        neighbourClasses();
+
+        layerReset();
+
+        state.transitioning =
+            false;
+
+        updateCounter();
+
+        restartProgress();
+
+        /* The timer is already running on the 2s photo clock. */
+
+    }, TRANSITION_DURATION);
+}  
+
 
     /* =====================================================
        NEXT / PREVIOUS
@@ -631,60 +677,33 @@ state.transitionTimer = setTimeout(() => {
 
     function next() {
 
-        if (
-            !state.started ||
-            state.transitioning ||
-            photos.length < 2
-        ) {
+        if (!state.started || state.transitioning || photos.length < 2) {
             return;
         }
 
-        stopTimer();
+        /* Last photo of this month -> graphic -> next month. */
+        if (state.index >= photos.length - 1) {
+            stopTimer();
+            finishCurrentMonth();
+            return;
+        }
 
-        const old =
-            state.index;
-
-        state.index =
-            (state.index + 1) %
-            photos.length;
-
-        runTransition(
-            old,
-            state.index,
-            1
-        );
-
+        const old = state.index;
+        state.index += 1;
+        runTransition(old, state.index, 1);
     }
 
     function previous() {
 
-        if (
-            !state.started ||
-            state.transitioning ||
-            photos.length < 2
-        ) {
+        if (!state.started || state.transitioning || photos.length < 2) {
             return;
         }
 
         stopTimer();
-
-        const old =
-            state.index;
-
-        state.index =
-            (
-                state.index -
-                1 +
-                photos.length
-            ) %
-            photos.length;
-
-        runTransition(
-            old,
-            state.index,
-            -1
-        );
-
+        const old = state.index;
+        state.index = Math.max(0, state.index - 1);
+        runTransition(old, state.index, -1);
+        startTimer();
     }
 
     /* =====================================================
@@ -879,415 +898,7 @@ state.transitionTimer = setTimeout(() => {
             4,
             "cinematic-ray"
         );
-        /* =========================================================
-   INTERACTIVE STRANDS — MONTH 01
-   ========================================================= */
-
-function initInteractiveStrands(canvas, stage) {
-
-    if (!canvas || !stage) return;
-
-    const ctx = canvas.getContext("2d");
-
-    const strands = [];
-
-    const CONFIG = {
-        count: 65,
-        points: 18,
-        segment: 15,
-
-        gravity: 0.22,
-        friction: 0.985,
-
-        mouseRadius: 135,
-        mouseForce: 9,
-
-        iterations: 4
-    };
-
-    const mouse = {
-        x: -9999,
-        y: -9999
-    };
-
-    function resize() {
-
-        const rect = stage.getBoundingClientRect();
-
-        const dpr = Math.min(
-            window.devicePixelRatio || 1,
-            2
-        );
-
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-
-        canvas.style.width = rect.width + "px";
-        canvas.style.height = rect.height + "px";
-
-        ctx.setTransform(
-            dpr,
-            0,
-            0,
-            dpr,
-            0,
-            0
-        );
     }
-
-    function updateMouse(clientX, clientY) {
-
-        const rect =
-            canvas.getBoundingClientRect();
-
-        mouse.x =
-            clientX - rect.left;
-
-        mouse.y =
-            clientY - rect.top;
-    }
-
-    stage.addEventListener(
-        "pointermove",
-        event => {
-            updateMouse(
-                event.clientX,
-                event.clientY
-            );
-        },
-        { passive: true }
-    );
-
-    stage.addEventListener(
-        "pointerleave",
-        () => {
-            mouse.x = -9999;
-            mouse.y = -9999;
-        },
-        { passive: true }
-    );
-
-    stage.addEventListener(
-        "touchmove",
-        event => {
-
-            const touch =
-                event.touches[0];
-
-            if (!touch) return;
-
-            updateMouse(
-                touch.clientX,
-                touch.clientY
-            );
-        },
-        { passive: true }
-    );
-
-    class Point {
-
-        constructor(x, y, pinned = false) {
-
-            this.x = x;
-            this.y = y;
-
-            this.oldX = x;
-            this.oldY = y;
-
-            this.pinned = pinned;
-        }
-
-        update() {
-
-            if (this.pinned) return;
-
-            const vx =
-                (this.x - this.oldX)
-                * CONFIG.friction;
-
-            const vy =
-                (this.y - this.oldY)
-                * CONFIG.friction;
-
-            this.oldX = this.x;
-            this.oldY = this.y;
-
-            this.x += vx;
-            this.y += vy;
-
-            this.y += CONFIG.gravity;
-
-            const dx =
-                mouse.x - this.x;
-
-            const dy =
-                mouse.y - this.y;
-
-            const dist =
-                Math.hypot(dx, dy);
-
-            if (
-                dist > 0 &&
-                dist < CONFIG.mouseRadius
-            ) {
-
-                const force =
-                    (1 - dist / CONFIG.mouseRadius)
-                    * CONFIG.mouseForce;
-
-                this.x -=
-                    (dx / dist) * force;
-
-                this.y -=
-                    (dy / dist) * force;
-            }
-        }
-    }
-
-    class Strand {
-
-        constructor(x) {
-
-            this.points = [];
-
-            for (
-                let i = 0;
-                i < CONFIG.points;
-                i++
-            ) {
-
-                this.points.push(
-                    new Point(
-                        x,
-                        -20 + i * CONFIG.segment,
-                        i === 0
-                    )
-                );
-            }
-
-            this.phase =
-                Math.random() * Math.PI * 2;
-
-            this.alpha =
-                .28 + Math.random() * .42;
-        }
-
-        constrain() {
-
-            for (
-                let i = 0;
-                i < this.points.length - 1;
-                i++
-            ) {
-
-                const a =
-                    this.points[i];
-
-                const b =
-                    this.points[i + 1];
-
-                const dx =
-                    b.x - a.x;
-
-                const dy =
-                    b.y - a.y;
-
-                const distance =
-                    Math.hypot(dx, dy) || 0.001;
-
-                const difference =
-                    (
-                        distance -
-                        CONFIG.segment
-                    ) / distance;
-
-                const offsetX =
-                    dx * difference * .5;
-
-                const offsetY =
-                    dy * difference * .5;
-
-                if (!a.pinned) {
-
-                    a.x += offsetX;
-                    a.y += offsetY;
-                }
-
-                if (!b.pinned) {
-
-                    b.x -= offsetX;
-                    b.y -= offsetY;
-                }
-            }
-        }
-
-        update(time) {
-
-            const sway =
-                Math.sin(
-                    time * .0007 +
-                    this.phase
-                ) * .12;
-
-            for (
-                let i = 0;
-                i < this.points.length;
-                i++
-            ) {
-
-                const p =
-                    this.points[i];
-
-                p.update();
-
-                if (!p.pinned) {
-
-                    p.x +=
-                        sway *
-                        (i / this.points.length);
-                }
-            }
-
-            for (
-                let i = 0;
-                i < CONFIG.iterations;
-                i++
-            ) {
-
-                this.constrain();
-            }
-        }
-
-        draw() {
-
-            if (this.points.length < 2)
-                return;
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                this.points[0].x,
-                this.points[0].y
-            );
-
-            for (
-                let i = 1;
-                i < this.points.length;
-                i++
-            ) {
-
-                const p =
-                    this.points[i];
-
-                ctx.lineTo(
-                    p.x,
-                    p.y
-                );
-            }
-
-            ctx.strokeStyle =
-                `rgba(220,220,235,${this.alpha})`;
-
-            ctx.lineWidth = 1;
-
-            ctx.stroke();
-
-            const tip =
-                this.points[
-                    this.points.length - 1
-                ];
-
-            ctx.beginPath();
-
-            ctx.arc(
-                tip.x,
-                tip.y,
-                2.2,
-                0,
-                Math.PI * 2
-            );
-
-            ctx.fillStyle =
-                "rgba(255,220,150,.9)";
-
-            ctx.fill();
-        }
-    }
-
-    function createStrands() {
-
-        strands.length = 0;
-
-        const rect =
-            stage.getBoundingClientRect();
-
-        for (
-            let i = 0;
-            i < CONFIG.count;
-            i++
-        ) {
-
-            const x =
-                25 +
-                Math.random() *
-                Math.max(
-                    1,
-                    rect.width - 50
-                );
-
-            strands.push(
-                new Strand(x)
-            );
-        }
-    }
-
-    function animate(time) {
-
-        const rect =
-            stage.getBoundingClientRect();
-
-        ctx.clearRect(
-            0,
-            0,
-            rect.width,
-            rect.height
-        );
-
-        for (const strand of strands) {
-
-            strand.update(time);
-            strand.draw();
-        }
-
-        requestAnimationFrame(
-            animate
-        );
-    }
-
-    resize();
-    createStrands();
-
-    window.addEventListener(
-        "resize",
-        resize
-    );
-
-    requestAnimationFrame(
-        animate
-    );
-}
-
-
-/* START MONTH 01 INTERACTIVE BACKGROUND */
-
-initInteractiveStrands(
-    document.getElementById(
-        "interactive-strands-01"
-    ),
-    stage
-);
-    }
-
         /* =====================================================
        AUDIO
        ===================================================== */
@@ -1475,116 +1086,617 @@ initInteractiveStrands(
     }
 
     /* =====================================================
-       ENTER MONTH
+       MULTI-MONTH HELPERS
        ===================================================== */
 
-    function enterMonth() {
+    function hideStoryLayers() {
+        $$(".month-screen").forEach(screen => {
+            screen.classList.remove("month-active", "js-visible");
+            screen.classList.add("js-hidden");
+            screen.setAttribute("aria-hidden", "true");
+        });
 
-        if (!month) {
+        chapter?.classList.remove("chapter-active");
+
+        if (conclusionScreen) {
+            conclusionScreen.classList.remove("js-visible");
+            conclusionScreen.classList.add("js-hidden");
+        }
+
+        if (birthdayRevealScreen) {
+            birthdayRevealScreen.classList.remove("js-visible");
+            birthdayRevealScreen.classList.add("js-hidden");
+        }
+    }
+
+    async function loadMonthGallery(monthNumber) {
+        const key = String(monthNumber).padStart(2, "0");
+        const screen = document.getElementById(`month-${key}`);
+        if (!screen) return null;
+
+        /*
+         * The original HTML contains only a visual placeholder for Months
+         * 02–12. Build the real month world here so the existing HTML does
+         * not have to be rewritten and the same photo engine works for all
+         * twelve chapters.
+         */
+        let targetGallery = $(".month-photos", screen);
+
+        if (!targetGallery) {
+            screen.classList.remove("future-month", "locked");
+            screen.classList.add("month-screen", "dynamic-month");
+            screen.dataset.month = key;
+
+            screen.innerHTML = `
+                <div class="month-environment" aria-hidden="true">
+                    <div class="environment-gradient"></div>
+                    <div class="environment-horizon"></div>
+                    <div class="environment-ground-glow"></div>
+                </div>
+
+                <div class="month-header">
+                    <div class="month-heading">
+                        <p class="month-kicker">CHAPTER ${key}</p>
+                        <h2>MONTH ${key}</h2>
+                    </div>
+                    <div class="month-date-mark">${key} / 12</div>
+                </div>
+
+                <div class="cinematic-photo-stage" id="photo-stage-${key}">
+                    <div class="photo-world" id="photo-world-${key}">
+                        <div class="photo-atmosphere" aria-hidden="true">
+                            <div class="photo-haze"></div>
+                            <div class="photo-light"></div>
+                            <div class="photo-shadow"></div>
+                        </div>
+                        <div class="month-photos" id="photos-${key}"></div>
+                    </div>
+                    <div class="photo-counter" aria-live="polite">
+                        <span>01</span>
+                        <span class="counter-line"></span>
+                        <span>00</span>
+                    </div>
+                    <div class="photo-progress" id="photo-progress-${key}" aria-hidden="true">
+                        <span class="photo-progress-fill"></span>
+                    </div>
+                    <div class="photo-navigation" aria-label="Photo navigation">
+                        <button class="photo-nav-button photo-prev" type="button">←</button>
+                        <button class="photo-nav-button photo-next" type="button">→</button>
+                    </div>
+                </div>
+
+                <div class="month-info">
+                    <p class="memory-month">MONTH ${key}</p>
+                    <h3>Another chapter.</h3>
+                    <p class="memory-text">Another month, another collection of little moments worth remembering.</p>
+                    <button class="voice-button" type="button" aria-label="Play or pause Month ${key} music" aria-pressed="false">
+                        <span class="voice-icon"><span class="voice-bar"></span><span class="voice-bar"></span><span class="voice-bar"></span><span class="voice-bar"></span></span>
+                        <span class="voice-text">Listen to my heart</span>
+                    </button>
+                    <audio preload="auto" aria-hidden="true"></audio>
+                </div>
+
+                <div class="chapter-progress">${key} / 12</div>
+            `;
+
+            targetGallery = $(".month-photos", screen);
+        }
+
+        if (!targetGallery) return null;
+
+        if (!targetGallery.querySelector("img")) {
+            try {
+                const response = await fetch(`/api/photos/${key}`, { cache: "no-store" });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                const files = Array.isArray(data.photos) ? data.photos : [];
+
+                targetGallery.innerHTML = "";
+                files.forEach((file, index) => {
+                    const img = document.createElement("img");
+                    img.className = "story-photo";
+                    img.alt = `Memory ${index + 1} from Month ${key}`;
+                    img.draggable = false;
+                    img.decoding = "async";
+                    img.loading = index < 3 ? "eager" : "lazy";
+                    img.src = `/media/month-${key}/${encodeURIComponent(file)}`;
+                    targetGallery.appendChild(img);
+                });
+            } catch (error) {
+                console.error(`Could not load Month ${key}`, error);
+            }
+        }
+
+        wrapPhotosForMotion(targetGallery);
+        return screen;
+    }
+
+    function bindMonthReferences(screen) {
+        month = screen;
+        stage = $(".photo-stage", screen) || screen;
+        world = $(".photo-world", screen) || screen;
+        gallery = $(".month-photos", screen);
+        currentEl = $(".photo-counter span:first-child", screen);
+        totalEl = $(".photo-counter span:last-child", screen);
+        progress = $(".photo-progress-fill", screen);
+        previousButton = $(".photo-prev", screen);
+        nextButton = $(".photo-next", screen);
+
+        /* Use a dedicated audio element for each month so extra tracks
+           can continue without touching the existing HTML structure. */
+        audio = $("audio", screen);
+    }
+
+    function stopCurrentAudio() {
+        if (!audio) return;
+        try {
+            audio.pause();
+            audio.currentTime = 0;
+        } catch (_) {}
+        audio = null;
+        currentAudio = null;
+    }
+
+    function playPlaylistTrack(index) {
+        if (!audio || index >= audioPlaylist.length) return;
+
+        audioPlaylistIndex = index;
+        audio.src = `/audio/${encodeURIComponent(audioPlaylist[index])}`;
+        audio.volume = 0.72;
+        audio.load();
+
+        const startPromise = audio.play();
+        if (startPromise?.catch) {
+            startPromise.catch(() => {
+                /* A browser may reject after the initial user gesture. */
+            });
+        }
+    }
+
+    function startMonthPlaylist(monthNumber, userGesture = false) {
+        stopCurrentAudio();
+
+        const key = String(monthNumber).padStart(2, "0");
+        const screen = document.getElementById(`month-${key}`);
+        if (!screen) return;
+
+        audio = $("audio", screen);
+        if (!audio) {
+            audio = document.createElement("audio");
+            audio.preload = "auto";
+            audio.setAttribute("aria-hidden", "true");
+            audio.style.display = "none";
+            screen.appendChild(audio);
+        }
+
+        audioPlaylist = monthAudioCandidates(monthNumber);
+        audioPlaylistIndex = 0;
+        currentAudio = audio;
+
+        audio.onended = () => {
+            const nextIndex = audioPlaylistIndex + 1;
+            if (nextIndex < audioPlaylist.length) {
+                playPlaylistTrack(nextIndex);
+            }
+        };
+
+        audio.onerror = () => {
+            const nextIndex = audioPlaylistIndex + 1;
+            if (nextIndex < audioPlaylist.length) {
+                playPlaylistTrack(nextIndex);
+            }
+        };
+
+        /* First month is started from the Begin click, satisfying the
+           browser's user-gesture audio requirement. */
+        playPlaylistTrack(0);
+
+        if (!userGesture) {
+            audio.volume = 0.72;
+        }
+    }
+
+    function ensureGraphicStyles() {
+        if ($("#story-graphic-runtime-css")) return;
+
+        const style = document.createElement("style");
+        style.id = "story-graphic-runtime-css";
+        style.textContent = `
+            .story-graphic-runtime{
+                position:fixed;inset:0;z-index:9000;display:flex;
+                align-items:center;justify-content:center;overflow:hidden;
+                background:radial-gradient(circle at 50% 45%,rgba(255,190,220,.20),transparent 34%),
+                           linear-gradient(135deg,#070611,#17112b 52%,#07050d);
+                opacity:0;visibility:hidden;pointer-events:none;
+                transition:opacity .55s ease,visibility .55s ease;
+            }
+            .story-graphic-runtime.active{opacity:1;visibility:visible;pointer-events:auto}
+            .story-graphic-runtime canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+            .story-graphic-copy{position:relative;z-index:2;text-align:center;pointer-events:none;padding:20px}
+            .story-graphic-copy small{display:block;font:9px/1.4 Arial,sans-serif;letter-spacing:.34em;opacity:.62;margin-bottom:18px}
+            .story-graphic-copy strong{display:block;font:400 clamp(40px,6.5vw,92px)/1.05 Georgia,serif;letter-spacing:.01em;text-shadow:0 0 35px rgba(255,190,220,.25)}
+            .story-graphic-copy span{display:block;margin-top:16px;font:9px Arial,sans-serif;letter-spacing:.22em;opacity:.52}
+            .birthday-runtime-3d{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;pointer-events:none;perspective:1200px}
+            .birthday-runtime-word{position:absolute;font:700 clamp(46px,9vw,150px)/.9 Georgia,serif;letter-spacing:.08em;color:#fff;text-shadow:0 0 10px rgba(255,190,225,.45),0 0 50px rgba(255,130,190,.28);opacity:0;transform-style:preserve-3d;animation:bdayWord3D 4.8s cubic-bezier(.2,.8,.2,1) both}
+            .birthday-runtime-word:nth-child(1){animation-delay:.15s}
+            .birthday-runtime-word:nth-child(2){animation-delay:1s}
+            .birthday-runtime-word:nth-child(3){animation-delay:1.85s}
+            .birthday-runtime-message{position:absolute;bottom:14%;max-width:720px;text-align:center;font:italic clamp(16px,2vw,26px)/1.5 Georgia,serif;letter-spacing:.08em;opacity:0;animation:bdayMessage3D 1.4s 2.75s ease both;text-shadow:0 0 25px rgba(255,200,225,.25)}
+            .birthday-runtime-video{position:absolute;z-index:0;inset:7% 8%;width:84%;height:86%;object-fit:contain;border-radius:24px;opacity:.32;filter:saturate(.85) brightness(.72);transform:translateZ(-80px);pointer-events:none}
+            @keyframes bdayWord3D{0%{opacity:0;transform:translate3d(0,90px,-500px) rotateX(42deg) rotateY(-16deg) scale(.45);filter:blur(12px)}22%{opacity:1}65%{opacity:1;transform:translate3d(0,0,40px) rotateX(0) rotateY(0) scale(1)}100%{opacity:.92;transform:translate3d(0,-55px,0) rotateX(-6deg) rotateY(5deg) scale(1.04)}}
+            @keyframes bdayMessage3D{from{opacity:0;transform:translate3d(0,35px,-120px) rotateX(18deg);filter:blur(8px)}to{opacity:.9;transform:none;filter:none}}
+            .story-navigation.runtime-locked{display:none!important;pointer-events:none!important}
+        `;
+        document.head.appendChild(style);
+    }
+
+    let graphicAnimationFrame = null;
+
+    function showGraphic(monthNumber, done) {
+        ensureGraphicStyles();
+
+        let overlay = $("#storyGraphicRuntime");
+        if (!overlay) {
+            overlay = document.createElement("div");
+            overlay.id = "storyGraphicRuntime";
+            overlay.className = "story-graphic-runtime";
+            overlay.innerHTML = `
+                <canvas></canvas>
+                <div class="story-graphic-copy">
+                    <small>BETWEEN THE CHAPTERS</small>
+                    <strong></strong>
+                    <span>move your pointer</span>
+                </div>`;
+            document.body.appendChild(overlay);
+        }
+
+        const titles = [
+            "And then…","The story moved on.","Another little chapter.",
+            "More moments followed.","Somewhere between then and now.","Still more memories.",
+            "And we kept going.","One more chapter.","The little things mattered.",
+            "Almost a year.","Closer to the whole story.","And then, the wish."
+        ];
+        $("strong", overlay).textContent = titles[monthNumber - 1] || "And then…";
+        overlay.classList.add("active");
+
+        const canvas = $("canvas", overlay);
+        const ctx = canvas.getContext("2d");
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let w = innerWidth, h = innerHeight, t = 0;
+        const pointer = { x: w/2, y: h/2, active:false };
+        const resize = () => {
+            w = innerWidth; h = innerHeight;
+            canvas.width = Math.floor(w*dpr); canvas.height = Math.floor(h*dpr);
+            canvas.style.width = w+"px"; canvas.style.height = h+"px";
+            ctx.setTransform(dpr,0,0,dpr,0,0);
+        };
+        const move = e => { pointer.x=e.clientX; pointer.y=e.clientY; pointer.active=true; };
+        const leave = () => { pointer.active=false; };
+        resize();
+        window.addEventListener("resize", resize);
+        overlay.addEventListener("pointermove", move);
+        overlay.addEventListener("pointerleave", leave);
+
+        const palette = [
+            ["#ffc6df","#fff0ae"],["#c7bfff","#ffd6ed"],["#9ce8ff","#ffd2a5"],
+            ["#ffcae9","#bff5ff"],["#ffe2a9","#dfc0ff"],["#ffb9c0","#fff2b6"],
+            ["#a9dcff","#f8bde5"],["#d9c0ff","#ffd59c"],["#b8ffd8","#ffb9dc"],
+            ["#ffd4ad","#cabaff"],["#ffbad7","#b9ebff"],["#ffe9a8","#ffb9dd"]
+        ][(monthNumber-1)%12];
+
+        const draw = () => {
+            ctx.clearRect(0,0,w,h);
+            t += .018;
+            const mode = (monthNumber-1)%6;
+            ctx.lineCap = "round";
+
+            for(let k=0;k<5;k++){
+                ctx.beginPath();
+                for(let x=0;x<=w;x+=12){
+                    let y;
+                    if(mode===0) y=h*.5+Math.sin(x*.008+t+k)*55;
+                    else if(mode===1) y=h*.5+Math.sin(x*.004+t*1.5+k)*80+Math.cos(x*.012-t)*22;
+                    else if(mode===2) y=h*.5+Math.sin(x*.012+t+k)*35+(x-w/2)*.12;
+                    else if(mode===3) y=h*.5+Math.cos(x*.006-t+k)*60+Math.sin(x*.002+t)*45;
+                    else if(mode===4) y=h*.5+Math.sin(x*.003+t+k)*95;
+                    else y=h*.5+Math.sin(x*.01+t+k)*25+Math.cos(x*.003-t)*75;
+                    if(pointer.active){
+                        const dx=x-pointer.x, dy=y-pointer.y, d=Math.hypot(dx,dy)||1;
+                        if(d<180) y += (dy/d)*(180-d)*.25;
+                    }
+                    x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+                }
+                ctx.strokeStyle = (k%2?palette[1]:palette[0]) + "66";
+                ctx.lineWidth = 1 + k*.45;
+                ctx.stroke();
+            }
+
+            const count=90;
+            for(let i=0;i<count;i++){
+                const a=t*.5+i*.68;
+                const r=Math.min(w,h)*(.12+(i%12)*.018);
+                let x=w/2+Math.cos(a)*r;
+                let y=h/2+Math.sin(a)*r*.65;
+                if(pointer.active){
+                    const dx=x-pointer.x,dy=y-pointer.y,d=Math.hypot(dx,dy)||1;
+                    if(d<150){const force=(150-d)/150;x+=dx/d*force*45;y+=dy/d*force*45;}
+                }
+                ctx.beginPath();ctx.arc(x,y,1+(i%4)*.55,0,Math.PI*2);
+                ctx.fillStyle=(i%2?palette[1]:palette[0])+"cc";ctx.fill();
+            }
+            graphicAnimationFrame=requestAnimationFrame(draw);
+        };
+        cancelAnimationFrame(graphicAnimationFrame);
+        draw();
+
+        clearTimeout(graphicTimer);
+        graphicTimer=setTimeout(()=>{
+            cancelAnimationFrame(graphicAnimationFrame);
+            window.removeEventListener("resize", resize);
+            overlay.removeEventListener("pointermove", move);
+            overlay.removeEventListener("pointerleave", leave);
+            overlay.classList.remove("active");
+            setTimeout(()=>done?.(),520);
+        },1900);
+    }
+
+    function buildBirthdayReveal() {
+        if (!birthdayRevealScreen) return;
+        ensureGraphicStyles();
+
+        if (!$(".birthday-runtime-3d", birthdayRevealScreen)) {
+            const layer=document.createElement("div");
+            layer.className="birthday-runtime-3d";
+            layer.style.zIndex = "1";
+            layer.innerHTML=`
+                <span class="birthday-runtime-word">HAPPY</span>
+                <span class="birthday-runtime-word">BIRTHDAY</span>
+                <span class="birthday-runtime-word">❤️</span>
+                <p class="birthday-runtime-message">You are one of the most beautiful parts of my story.<br>May every year ahead bring you reasons to smile.</p>`;
+            birthdayRevealScreen.appendChild(layer);
+        }
+
+        const birthdayContent = $(".birthday-content", birthdayRevealScreen);
+        if (birthdayContent) {
+            birthdayContent.style.position = "relative";
+            birthdayContent.style.zIndex = "3";
+            birthdayContent.style.pointerEvents = "none";
+        }
+
+        /* If a birthday video is present in the HTML, keep it behind the 3D text. */
+        const video = $("#birthdayVideo", birthdayRevealScreen);
+        if (video) {
+            video.classList.add("birthday-runtime-video");
+            video.muted = true;
+            video.loop = true;
+            video.play().catch(()=>{});
+        }
+    }
+
+    function unlockNavigation() {
+        if (!storyNavigation) return;
+        storyNavigation.classList.remove("runtime-locked");
+        storyNavigation.style.display = "block";
+        $$(".chapter-nav-button", storyNavigation).forEach(button => {
+            button.disabled = false;
+        });
+    }
+
+    async function finishCurrentMonth() {
+        if (state.transitioning) return;
+        stopTimer();
+        stopCurrentAudio();
+
+        if (currentMonthNumber >= TOTAL_MONTHS) {
+            finishStory();
             return;
         }
 
-        chapter?.classList.remove(
-            "chapter-active"
-        );
+        showGraphic(currentMonthNumber, () => {
+            activateMonth(currentMonthNumber + 1, false);
+        });
+    }
 
-        month.classList.add(
-            "month-active"
-        );
+    async function activateMonth(monthNumber, firstEntry = false) {
+        clearTimeout(state.transitionTimer);
+        stopTimer();
 
-        month.setAttribute(
-            "aria-hidden",
-            "false"
-        );
+        const screen = await loadMonthGallery(monthNumber);
+        if (!screen) {
+            if (monthNumber < TOTAL_MONTHS) return activateMonth(monthNumber + 1, false);
+            finishStory();
+            return;
+        }
 
-        document.body.classList.add(
-            "month-one-active"
-        );
+        hideStoryLayers();
+        bindMonthReferences(screen);
+        currentMonthNumber = monthNumber;
+        state.index = 0;
+        state.transitioning = false;
 
+        screen.classList.remove("js-hidden");
+        screen.classList.add("js-visible", "month-active");
+        screen.setAttribute("aria-hidden", "false");
+        screen.classList.add("cinematic-mode");
+
+        document.body.classList.toggle("month-one-active", monthNumber === 1);
+        document.body.dataset.storyMonth = String(monthNumber);
+
+        photos = $$(".story-photo", gallery);
+        wrapPhotosForMotion(gallery);
+        photos = $$(".story-photo", gallery);
+
+        if (!photos.length) {
+            return finishCurrentMonth();
+        }
+
+        /* Fresh references are needed because the photo engine was originally
+           written for Month 01 only. */
+        previousButton?.replaceWith(previousButton.cloneNode(true));
+        nextButton?.replaceWith(nextButton.cloneNode(true));
+        previousButton = $(".photo-prev", screen);
+        nextButton = $(".photo-next", screen);
+        previousButton?.addEventListener("click", previous);
+        nextButton?.addEventListener("click", next);
+
+        setTheme(0);
         showInitialPhoto();
 
-        startMusic();
+        const alreadyStartedFirstAudio =
+            monthNumber === 1 &&
+            firstEntry &&
+            audio &&
+            currentAudio === audio &&
+            !audio.paused;
+
+        if (!alreadyStartedFirstAudio) {
+            startMonthPlaylist(monthNumber, firstEntry);
+        }
+
+        /* Rebind swipe/parallax to the currently active month. */
+        let touchStartX = 0;
+        let touchStartY = 0;
+        stage?.addEventListener("touchstart", event => {
+            const touch = event.changedTouches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+        }, { passive:true });
+        stage?.addEventListener("touchend", event => {
+            const touch = event.changedTouches[0];
+            const dx = touch.clientX - touchStartX;
+            const dy = touch.clientY - touchStartY;
+            if (Math.abs(dx) < 55 || Math.abs(dy) > Math.abs(dx)) return;
+            dx < 0 ? next() : previous();
+        }, { passive:true });
+        world?.addEventListener("pointermove", event => {
+            const rect = world.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - .5;
+            const y = (event.clientY - rect.top) / rect.height - .5;
+            const photo = photos[state.index];
+            if (!photo) return;
+            photo.style.setProperty("--mouse-x", `${x * 14}px`);
+            photo.style.setProperty("--mouse-y", `${y * 10}px`);
+        });
 
         startTimer();
     }
 
-    /* =====================================================
-       BEGIN STORY
-       ===================================================== */
+    function forceBirthdayRevealVisible() {
+        if (!birthdayRevealScreen) return;
+
+        /* Final safety layer: the birthday reveal must never remain hidden
+           because of an older .birthday-reveal / .locked CSS rule. */
+        birthdayRevealScreen.classList.remove("js-hidden", "locked");
+        birthdayRevealScreen.classList.add("js-visible");
+        birthdayRevealScreen.style.display = "grid";
+        birthdayRevealScreen.style.position = "fixed";
+        birthdayRevealScreen.style.inset = "0";
+        birthdayRevealScreen.style.width = "100vw";
+        birthdayRevealScreen.style.height = "100svh";
+        birthdayRevealScreen.style.opacity = "1";
+        birthdayRevealScreen.style.visibility = "visible";
+        birthdayRevealScreen.style.pointerEvents = "auto";
+        birthdayRevealScreen.style.zIndex = "9999";
+        birthdayRevealScreen.setAttribute("aria-hidden", "false");
+    }
+
+    function finishStory() {
+        stopTimer();
+        stopCurrentAudio();
+        state.transitioning = false;
+        storyCompleted = true;
+        localStorage.setItem("storyCompleted", "true");
+
+        hideStoryLayers();
+
+        if (conclusionScreen) {
+            conclusionScreen.classList.remove("js-hidden");
+            conclusionScreen.classList.add("js-visible");
+            conclusionScreen.setAttribute("aria-hidden", "false");
+        }
+
+        buildBirthdayReveal();
+
+        /* Conclusion is brief, then the actual birthday reveal opens. */
+        setTimeout(() => {
+            if (conclusionScreen) {
+                conclusionScreen.classList.remove("js-visible");
+                conclusionScreen.classList.add("js-hidden");
+            }
+            if (birthdayRevealScreen) {
+                forceBirthdayRevealVisible();
+                buildBirthdayReveal();
+            }
+            playWishSong();
+            unlockNavigation();
+        }, 1800);
+    }
+
+    function playWishSong() {
+        stopCurrentAudio();
+        let wish = $("#wish-song");
+        if (!wish) {
+            wish = document.createElement("audio");
+            wish.id = "wish-song";
+            wish.src = "/audio/wish%20song.mp3";
+            wish.loop = true;
+            wish.preload = "auto";
+            wish.style.display = "none";
+            document.body.appendChild(wish);
+        }
+        currentAudio = wish;
+        audio = wish;
+        wish.volume = .78;
+        wish.play().catch(()=>{});
+    }
+
+    /* -----------------------------------------------------
+       ENTER MONTH / BEGIN STORY
+    ----------------------------------------------------- */
+
+    function enterMonth(monthNumber = 1) {
+        activateMonth(monthNumber, monthNumber === 1);
+    }
 
     async function begin() {
-
-        if (state.started) {
-            return;
-        }
+        if (state.started) return;
 
         state.started = true;
-
+        storyCompleted = false;
+        localStorage.removeItem("storyCompleted");
         start.disabled = true;
+        if (storyNavigation) storyNavigation.classList.add("runtime-locked");
 
-        document.body.classList.add(
-            "story-started"
-        );
+        document.body.classList.add("story-started");
 
-        /*
-         * Try audio inside the user's click.
-         */
-
-        if (
-            audio &&
-            !state.audioMuted
-        ) {
-
-            audio.volume = 0;
-
-            audio.play()
-                .then(() => {
-
-                    state.audioStarted =
-                        true;
-
-                    state.audioPlaying =
-                        true;
-
-                })
-                .catch(() => {});
+        /* Start Month 01 audio from the actual user click. */
+        const firstScreen = document.getElementById("month-01");
+        if (firstScreen) {
+            bindMonthReferences(firstScreen);
+            startMonthPlaylist(1, true);
+            if (audio) audio.volume = 0;
         }
 
-        if (intro) {
+        if (intro) intro.classList.add("intro-leaving");
+        await wait(700);
+        intro?.classList.add("intro-hidden");
+        story?.classList.add("story-visible");
+        story?.setAttribute("aria-hidden", "false");
+        header?.classList.add("header-visible");
 
-            intro.classList.add(
-                "intro-leaving"
-            );
-        }
-
-        await wait(850);
-
-        intro?.classList.add(
-            "intro-hidden"
-        );
-
-        story?.classList.add(
-            "story-visible"
-        );
-
-        story?.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-        header?.classList.add(
-            "header-visible"
-        );
-
+        /* Only a short Chapter 01 reveal — never the old multi-minute pause. */
+        /* Show the real Chapter 01 intro before the first photo. */
         await wait(180);
-
-        chapter?.classList.add(
-            "chapter-active"
-        );
-
+        chapter?.classList.add("chapter-active");
         await wait(3000);
+        chapter?.classList.remove("chapter-active");
 
-        enterMonth();
+        await activateMonth(1, true);
+
+        if (audio) {
+            audio.volume = 0;
+            fadeAudio(.72, 900);
+        }
     }
 
     /* =====================================================
@@ -1606,15 +1718,36 @@ initInteractiveStrands(
         toggleAudio
     );
 
-    previousButton?.addEventListener(
-        "click",
-        previous
-    );
+    /* Month navigation buttons are rebound by activateMonth(). */
 
-    nextButton?.addEventListener(
-        "click",
-        next
-    );
+    /* =====================================================
+       NAVIGATION + BIRTHDAY CONTROLS
+       ===================================================== */
+
+    if (storyNavigation) {
+        storyNavigation.classList.add("runtime-locked");
+        $$(".chapter-nav-button", storyNavigation).forEach(button => {
+            button.disabled = true;
+        });
+    }
+
+    document.addEventListener("click", event => {
+        const button = event.target.closest(".chapter-nav-button");
+        if (!button || !storyCompleted) return;
+        const m = Number((button.dataset.target || "").replace("month-", ""));
+        if (m >= 1 && m <= 12) {
+            event.preventDefault();
+            activateMonth(m, false);
+        }
+    });
+
+    document.getElementById("birthdayButton")?.addEventListener("click", () => {
+        if (!birthdayRevealScreen) return;
+        buildBirthdayReveal();
+        forceBirthdayRevealVisible();
+        buildBirthdayReveal();
+        playWishSong();
+    });
 
     /* =====================================================
        TOUCH
@@ -1792,7 +1925,11 @@ initInteractiveStrands(
 
     buildAtmosphere();
 
-    showInitialPhoto();
+    hideStoryLayers();
+    if (storyNavigation) {
+        storyNavigation.classList.add("runtime-locked");
+        storyNavigation.style.display = "none";
+    }
 
     /* =====================================================
        DEBUG / CONTROL API

@@ -1,211 +1,37 @@
-from flask import (
-    Flask,
-    render_template,
-    send_from_directory,
-    jsonify,
-    abort
-)
-
-from pathlib import Path
-
-
-# =========================================================
-# 365 DAYS — OUR STORY
-# FLASK BACKEND
-# =========================================================
+from flask import Flask, render_template, send_from_directory, jsonify
+import os
 
 app = Flask(__name__)
 
+PHOTO_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
+AUDIO_EXTENSIONS = (".mp3", ".wav", ".ogg", ".m4a")
 
-# =========================================================
-# PROJECT PATHS
-# =========================================================
-
-BASE_DIR = Path(__file__).resolve().parent
-
-MEDIA_DIR = BASE_DIR / "media"
-AUDIO_DIR = BASE_DIR / "static" / "audio"
-
-
-# =========================================================
-# SUPPORTED FILE TYPES
-# =========================================================
-
-PHOTO_EXTENSIONS = {
-    ".jpg",
-    ".jpeg",
-    ".png",
-    ".webp"
-}
-
-
-AUDIO_EXTENSIONS = {
-    ".mp3",
-    ".wav",
-    ".ogg",
-    ".m4a"
-}
-
-
-# =========================================================
-# MONTH HELPERS
-# =========================================================
-
-def normalize_month(month_number):
-    """
-    Converts:
-        1   -> 01
-        01  -> 01
-        12  -> 12
-
-    Returns None for invalid months.
-    """
-
-    try:
-        month = int(month_number)
-    except (TypeError, ValueError):
-        return None
-
-    if month < 1 or month > 12:
-        return None
-
-    return f"{month:02d}"
-
-
-def month_folder(month_number):
-    """
-    Returns the physical folder for a month.
-    """
-
-    month = normalize_month(month_number)
-
-    if month is None:
-        return None
-
-    return MEDIA_DIR / f"month-{month}"
-
-
-# =========================================================
-# PHOTO DISCOVERY
-# =========================================================
 
 def get_month_photos(month_number):
-    """
-    Reads photos directly from:
-
-        media/month-01/
-        media/month-02/
-        ...
-        media/month-12/
-
-    The folders are never modified.
-    """
-
-    folder = month_folder(month_number)
-
-    if folder is None or not folder.exists():
-        return []
+    month_path = os.path.join(
+        app.root_path,
+        "media",
+        f"month-{month_number}"
+    )
 
     photos = []
 
-    for file_path in folder.iterdir():
+    if os.path.exists(month_path):
+        for file in os.listdir(month_path):
+            if file.lower().endswith(PHOTO_EXTENSIONS):
+                photos.append(file)
 
-        if not file_path.is_file():
-            continue
-
-        if file_path.suffix.lower() not in PHOTO_EXTENSIONS:
-            continue
-
-        photos.append(file_path.name)
-
-    # Natural-ish alphabetical ordering.
-    # Your existing filenames remain untouched.
-    photos.sort(key=lambda name: name.lower())
-
+    photos.sort()
     return photos
 
 
-# =========================================================
-# ALL MONTH PHOTO DATA
-# =========================================================
-
-def get_all_photos():
-    """
-    Returns:
-
-    {
-        "01": [...],
-        "02": [...],
-        ...
-        "12": [...]
-    }
-    """
-
+@app.route("/")
+def home():
     photos_by_month = {}
 
     for month in range(1, 13):
-
         month_number = f"{month:02d}"
-
-        photos_by_month[month_number] = (
-            get_month_photos(month_number)
-        )
-
-    return photos_by_month
-
-
-# =========================================================
-# AUDIO DISCOVERY
-# =========================================================
-
-def get_month_audio(month_number):
-    """
-    Finds the audio file for a month.
-
-    Preferred naming:
-
-        static/audio/month-01.mp3
-        static/audio/month-02.mp3
-        ...
-        static/audio/month-12.mp3
-
-    If MP3 is not present, supported alternatives
-    are checked automatically.
-    """
-
-    month = normalize_month(month_number)
-
-    if month is None:
-        return None
-
-    if not AUDIO_DIR.exists():
-        return None
-
-    preferred_names = [
-        f"month-{month}.mp3",
-        f"month-{month}.wav",
-        f"month-{month}.ogg",
-        f"month-{month}.m4a",
-    ]
-
-    for filename in preferred_names:
-
-        audio_file = AUDIO_DIR / filename
-
-        if audio_file.is_file():
-            return filename
-
-    return None
-
-
-# =========================================================
-# HOME
-# =========================================================
-
-@app.route("/")
-def home():
-
-    photos_by_month = get_all_photos()
+        photos_by_month[month_number] = get_month_photos(month_number)
 
     return render_template(
         "index.html",
@@ -213,151 +39,96 @@ def home():
     )
 
 
-# =========================================================
-# PHOTO API
-# =========================================================
-
 @app.route("/api/photos/<month_number>")
 def api_photos(month_number):
+    if not month_number.isdigit():
+        return jsonify({"photos": []}), 400
 
-    month = normalize_month(month_number)
+    month = int(month_number)
 
-    if month is None:
-        return jsonify({
-            "success": False,
-            "month": None,
-            "photos": []
-        }), 400
+    if month < 1 or month > 12:
+        return jsonify({"photos": []}), 404
 
-    photos = get_month_photos(month)
+    month_number = f"{month:02d}"
 
     return jsonify({
-        "success": True,
-        "month": month,
-        "photos": photos,
-        "count": len(photos)
+        "month": month_number,
+        "photos": get_month_photos(month_number)
     })
 
-
-# =========================================================
-# ALL PHOTOS API
-# =========================================================
-
-@app.route("/api/photos")
-def api_all_photos():
-
-    photos_by_month = get_all_photos()
-
-    return jsonify({
-        "success": True,
-        "months": photos_by_month
-    })
-
-
-# =========================================================
-# AUDIO API
-# =========================================================
-
-@app.route("/api/audio/<month_number>")
-def api_audio(month_number):
-
-    month = normalize_month(month_number)
-
-    if month is None:
-        return jsonify({
-            "success": False,
-            "month": None,
-            "audio": None
-        }), 400
-
-    audio = get_month_audio(month)
-
-    return jsonify({
-        "success": True,
-        "month": month,
-        "audio": audio
-    })
-
-
-# =========================================================
-# MEDIA FILE SERVER
-# =========================================================
 
 @app.route("/media/<path:filename>")
 def media(filename):
-
-    if not MEDIA_DIR.exists():
-        abort(404)
-
     return send_from_directory(
-        MEDIA_DIR,
+        os.path.join(app.root_path, "media"),
         filename
     )
 
-
-# =========================================================
-# AUDIO FILE SERVER
-# =========================================================
 
 @app.route("/audio/<path:filename>")
 def audio(filename):
-
-    if not AUDIO_DIR.exists():
-        abort(404)
-
     return send_from_directory(
-        AUDIO_DIR,
+        os.path.join(app.root_path, "static", "audio"),
         filename
     )
 
 
-# =========================================================
-# BASIC HEALTH CHECK
-# =========================================================
+@app.route("/api/audio/<month_number>")
+def api_audio(month_number):
+    if not month_number.isdigit():
+        return jsonify({"audio": None}), 400
 
-@app.route("/api/health")
-def health():
+    month = int(month_number)
+
+    if month < 1 or month > 12:
+        return jsonify({"audio": None}), 404
+
+    filename = f"month-{month:02d}.mp3"
+    audio_path = os.path.join(
+        app.root_path,
+        "static",
+        "audio",
+        filename
+    )
 
     return jsonify({
-        "success": True,
-        "project": "365 Days — Our Story",
-        "months": 12,
-        "media_folder_exists": MEDIA_DIR.exists(),
-        "audio_folder_exists": AUDIO_DIR.exists()
+        "month": f"{month:02d}",
+        "audio": filename if os.path.exists(audio_path) else None
     })
 
 
-# =========================================================
-# ERROR HANDLERS
-# =========================================================
+@app.route("/api/audio-playlist/<month_number>")
+def api_audio_playlist(month_number):
+    if not month_number.isdigit():
+        return jsonify({"files": []}), 400
 
-@app.errorhandler(404)
-def page_not_found(error):
+    month = int(month_number)
+    if month < 1 or month > 12:
+        return jsonify({"files": []}), 404
+
+    mm = f"{month:02d}"
+    audio_dir = os.path.join(app.root_path, "static", "audio")
+    files = []
+
+    if os.path.exists(audio_dir):
+        import re
+        pattern = re.compile(
+            rf"^month-{mm}(?:[-_]([0-9]+))?\.(mp3|wav|ogg|m4a)$",
+            re.IGNORECASE
+        )
+        for filename in os.listdir(audio_dir):
+            match = pattern.match(filename)
+            if match:
+                order = int(match.group(1) or 0)
+                files.append((order, filename))
+
+    files.sort(key=lambda item: (item[0], item[1].lower()))
 
     return jsonify({
-        "success": False,
-        "error": "Not found"
-    }), 404
+        "month": mm,
+        "files": [f"/audio/{filename}" for _, filename in files]
+    })
 
-
-# =========================================================
-# RUN
-# =========================================================
 
 if __name__ == "__main__":
-
-    print()
-    print("=" * 60)
-    print("365 DAYS — OUR STORY")
-    print("=" * 60)
-    print(f"Project : {BASE_DIR}")
-    print(f"Media   : {MEDIA_DIR}")
-    print(f"Audio   : {AUDIO_DIR}")
-    print("=" * 60)
-    print()
-
-    app.run(
-        host="127.0.0.1",
-        port=5000,
-        debug=True
-    )
+    app.run(debug=True)
